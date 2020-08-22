@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Meteor.Database;
 using Meteor.Database.Sql;
+using Meteor.Utils;
 
 namespace Meteor.Message.Db
 {
@@ -49,6 +50,9 @@ namespace Meteor.Message.Db
         /// <returns></returns>
         public async Task<TOut> ExecuteInTransactionAsync<TOut>(Func<IDbTransaction, Task<TOut>> func, IsolationLevel isolationLevel)
         {
+            if (func == null)
+                throw Errors.InvalidInput("null_method");
+            
             if (Transaction != null)
                 return await func(Transaction).ConfigureAwait(false);
 

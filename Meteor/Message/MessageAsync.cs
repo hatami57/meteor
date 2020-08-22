@@ -17,6 +17,14 @@ namespace Meteor.Message
             Task.CompletedTask;
         public virtual Task ValidateAfterExecutionAsync(T result) =>
             Task.CompletedTask;
+        /// <summary>
+        /// This method is called when the message is executed successfully
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task OnSuccessAsync() =>
+            Task.CompletedTask;
+        protected virtual Task OnErrorAsync(Exception e) =>
+            Task.CompletedTask;
         protected virtual Task FinalizeAsync() =>
             Task.CompletedTask;
 
@@ -44,11 +52,15 @@ namespace Meteor.Message
                 Log.Verbose("calling {MethodName}", nameof(ValidateAfterExecutionAsync));
                 await msg.ValidateAfterExecutionAsync(res).ConfigureAwait(false);
 
+                await Errors.IgnoreAsync(msg.OnSuccessAsync()).ConfigureAwait(false);
                 Log.Debug("message executed successfully");
+
                 return res;
             }
             catch (Exception e)
             {
+                if (msg != null)
+                    await Errors.IgnoreAsync(msg.OnErrorAsync(e)).ConfigureAwait(false);
                 Log.Error(e, "message execution failed");
                 throw;
             }

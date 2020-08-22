@@ -3,7 +3,7 @@
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.7</PackageVersion>
+        <PackageVersion>0.7.1</PackageVersion>
         <Title>Meteor Library</Title>
         <Authors>Majid Hatami</Authors>
         <TargetFramework>netstandard2.1</TargetFramework>
