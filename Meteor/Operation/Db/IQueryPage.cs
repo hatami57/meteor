@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Meteor.Message.Db
+namespace Meteor.Operation.Db
 {
     public interface IQueryPage<T>
     {

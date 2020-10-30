@@ -6,14 +6,14 @@ namespace Meteor.Utils
 {
     public class OperationResult
     {
-        public bool Success { get; set;  }
-        public Error Error { get; set; }
+        public bool Success { get; set; }
+        public Error? Error { get; set; }
 
         public OperationResult() : this(false)
         {
         }
 
-        public OperationResult(bool success, Error error = null)
+        public OperationResult(bool success, Error? error = null)
         {
             Success = success;
             Error = error;
@@ -21,6 +21,7 @@ namespace Meteor.Utils
 
         public async Task<OperationResult> Then(Func<OperationResult, Task> func) =>
             (Error == null) ? await Try(() => func(this)).ConfigureAwait(false) : this;
+
         public async Task<OperationResult> Catch(Func<OperationResult, Task> func) =>
             (Error != null) ? await Try(() => func(this)).ConfigureAwait(false) : this;
 
@@ -38,7 +39,7 @@ namespace Meteor.Utils
                     e as Error ?? Errors.InternalError(null, e));
             }
         }
-        
+
         public static async Task<OperationResult> Try(Func<Task<OperationResult>> func)
         {
             try
@@ -62,14 +63,15 @@ namespace Meteor.Utils
         {
         }
 
-        public OperationResult(bool success, T result, Error error = null)
+        public OperationResult(bool success, T result, Error? error = null)
             : base(success, error)
         {
             Result = result;
         }
-        
+
         public async Task<OperationResult<T>> Then(Func<OperationResult<T>, Task<T>> func) =>
             (Error == null) ? await Try(() => func(this)).ConfigureAwait(false) : this;
+
         public async Task<OperationResult<T>> Catch(Func<OperationResult<T>, Task<T>> func) =>
             (Error != null) ? await Try(() => func(this)).ConfigureAwait(false) : this;
 
@@ -86,7 +88,7 @@ namespace Meteor.Utils
                     e as Error ?? Errors.InternalError(null, e));
             }
         }
-        
+
         public static async Task<OperationResult<T>> Try(Func<Task<OperationResult<T>>> func)
         {
             try
@@ -101,13 +103,13 @@ namespace Meteor.Utils
             }
         }
     }
-    
+
     public class Error : Exception
     {
         public int Code { get; set; }
-        public object Details { get; set; }
+        public object? Details { get; set; }
 
-        public Error(int code, string message, object details = null, Exception innerException = null)
+        public Error(int code, string message, object? details = null, Exception? innerException = null)
             : base(message, innerException)
         {
             Code = code;

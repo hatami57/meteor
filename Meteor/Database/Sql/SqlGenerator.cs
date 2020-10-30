@@ -9,12 +9,12 @@ namespace Meteor.Database.Sql
     public class SqlGenerator
     {
         private readonly LazyDbConnection _lazyDbConnection;
-        private readonly IDbTransaction _transaction;
-        public object ParamObject { get; set; }
+        private readonly IDbTransaction? _transaction;
+        public object? ParamObject { get; set; }
         public string Sql { get; set; }
 
-        public SqlGenerator(LazyDbConnection lazyDbConnection, string sql, object paramObject,
-            IDbTransaction transaction = null)
+        public SqlGenerator(LazyDbConnection lazyDbConnection, string sql, object? paramObject,
+            IDbTransaction? transaction = null)
         {
             _lazyDbConnection = lazyDbConnection;
             Sql = sql;
@@ -27,7 +27,7 @@ namespace Meteor.Database.Sql
         {
         }
 
-        public SqlGenerator SetParamObject(object paramObject)
+        public SqlGenerator SetParamObject(object? paramObject)
         {
             ParamObject = paramObject;
             return this;

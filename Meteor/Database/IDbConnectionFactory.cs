@@ -6,6 +6,5 @@ namespace Meteor.Database
     public interface IDbConnectionFactory
     {
         Task<DbConnection> OpenNewConnectionAsync();
-        LazyDbConnection OpenNewLazyConnection();
     }
 }

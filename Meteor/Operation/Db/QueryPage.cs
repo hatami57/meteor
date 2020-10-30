@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Meteor.Message.Db
+namespace Meteor.Operation.Db
 {
     public class QueryPage<T> : IQueryPage<T>
     {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Meteor.Database.Sql;
 
-namespace Meteor.Message.Db
+namespace Meteor.Operation.Db
 {
     public static class Extensions
     {
