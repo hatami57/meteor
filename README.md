@@ -1,6 +1,6 @@
 # Meteor Library
 
-## MessageAsync
+## OperationAsync
 
 You can use `OperationAsync` class for wrapping any operation as an object that is passing through the following steps in order:
 
@@ -12,7 +12,7 @@ You can use `OperationAsync` class for wrapping any operation as an object that 
 6. `ValidateAfterExecutionAsync`: Validating environment after executing the operation
 7. `FinalizeAsync`: Finalize and release resources
 
-When you derive from `OperationAsync` class, `ExecuteAsync` is an abstract method that should be implemented, however other methods are overridable.
+When you derive from `OperationAsync` class, `ExecutionAsync` is an abstract method that should be implemented, however other methods are overridable.
 
 You can stop execution flow in any step by throwing an exception, but
 `FinalizeAsync` is always called at the end whether any exception is occured or not.
