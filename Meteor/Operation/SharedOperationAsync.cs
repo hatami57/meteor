@@ -45,9 +45,14 @@ namespace Meteor.Operation
             Shared = shared;
             return this;
         }
-        
-        public Task ShareAndExecuteAsync(SharedOperationAsync<TShared> operation) =>
-            operation.UseSharedObject(Shared).ExecuteAsync();
+
+        public Task ShareAndExecuteAsync(SharedOperationAsync<TShared> operation)
+        {
+            if (operation != null)
+                return operation.UseSharedObject(Shared).ExecuteAsync();
+
+            return Task.CompletedTask;
+        }
 
         public virtual async Task ExecuteAsync()
         {
