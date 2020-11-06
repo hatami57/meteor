@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using Dapper;
-using Meteor.Database.Sql;
+using Meteor.Database;
+using Meteor.Database.SqlDialect;
 using Meteor.Utils;
 
 namespace Meteor.Operation.Db
 {
-    public abstract class DbOperationAsync<T> : SharedOperationAsync<T, SharedLazyDbConnection>
+    public abstract class DbOperationAsync<T> : OperationAsync<T>
     {
-        public DbOperationAsync(SharedLazyDbConnection sharedLazyDbConnection)
+        public LazyDbConnection LazyDbConnection { get; private set; }
+        protected ISqlDialect? SqlDialect { get; private set; }
+
+        public DbOperationAsync(LazyDbConnection lazyDbConnection, ISqlDialect? sqlDialect)
         {
-            UseSharedObject(sharedLazyDbConnection);
+            LazyDbConnection = lazyDbConnection;
+            SqlDialect = sqlDialect;
         }
 
         /// <summary>
@@ -26,76 +29,33 @@ namespace Meteor.Operation.Db
         /// <param name="isolationLevel"></param>
         /// <typeparam name="TOut"></typeparam>
         /// <returns></returns>
-        public async Task<TOut> ExecuteInTransactionAsync<TOut>(Func<IDbTransaction, Task<TOut>> func,
+        public Task<TOut> EnsureInTransactionAsync<TOut>(Func<LazyDbConnection, IDbTransaction, Task<TOut>> func,
             IsolationLevel isolationLevel)
         {
             if (func == null)
                 throw Errors.InvalidInput("null_method");
 
-            if (Shared.Transaction != null)
-                return await func(Shared.Transaction).ConfigureAwait(false);
-
-            if (Shared.LazyDbConnection == null)
+            if (LazyDbConnection == null)
                 throw Errors.InvalidOperation("null_lazy_db_connection");
 
-            await using var tx = await Shared.LazyDbConnection.BeginTransactionAsync(isolationLevel)
-                .ConfigureAwait(false);
-            try
-            {
-                Shared.Transaction = tx;
-                var res = await func(tx).ConfigureAwait(false);
-                Shared.Transaction = null;
-
-                await tx.CommitAsync().ConfigureAwait(false);
-
-                return res;
-            }
-            catch
-            {
-                Shared.Transaction = null;
-
-                await tx.RollbackAsync().ConfigureAwait(false);
-                throw;
-            }
+            return LazyDbConnection.EnsureInTransactionAsync(func, isolationLevel);
         }
 
-        protected SqlGenerator NewSql(string sql = "") =>
-            new SqlGenerator(Shared.LazyDbConnection, sql, this, Shared.Transaction);
+        protected RunnableSql NewSql(Action<ISqlDialect> sql, object? param = null) =>
+            new RunnableSql(LazyDbConnection, PrepareSql(sql), param ?? this);
+        
+        protected RunnableSql NewSql(string sqlText, object? param = null) =>
+            new RunnableSql(LazyDbConnection, sqlText, param ?? this);
 
-        public async Task<SqlMapper.GridReader> QueryMultipleAsync(string sql) =>
-            await (await Shared.LazyDbConnection.GetConnectionAsync().ConfigureAwait(false))
-                .QueryMultipleAsync(sql, this, Shared.Transaction).ConfigureAwait(false);
-
-        protected async Task<IEnumerable<TModel>> QueryAsync<TModel>(string sql) =>
-            await (await Shared.LazyDbConnection.GetConnectionAsync().ConfigureAwait(false))
-                .QueryAsync<TModel>(sql, this, Shared.Transaction).ConfigureAwait(false);
-
-        protected async Task<IEnumerable<TReturn>> QueryAsync<TModel1, TModel2, TReturn>(string sql,
-            Func<TModel1, TModel2, TReturn> func, string splitOn = "Id") =>
-            await (await Shared.LazyDbConnection.GetConnectionAsync().ConfigureAwait(false))
-                .QueryAsync(sql, func, this, Shared.Transaction, splitOn: splitOn).ConfigureAwait(false);
-
-        protected async Task<IEnumerable<TReturn>> QueryAsync<TModel1, TModel2, TModel3, TReturn>(string sql,
-            Func<TModel1, TModel2, TModel3, TReturn> func, string splitOn = "Id") =>
-            await (await Shared.LazyDbConnection.GetConnectionAsync().ConfigureAwait(false))
-                .QueryAsync(sql, func, this, Shared.Transaction, splitOn: splitOn).ConfigureAwait(false);
-
-        protected async Task<TModel> QueryFirstOrDefaultAsync<TModel>(string sql) =>
-            await (await Shared.LazyDbConnection.GetConnectionAsync().ConfigureAwait(false))
-                .QueryFirstOrDefaultAsync<TModel>(sql, this, Shared.Transaction).ConfigureAwait(false);
-
-        protected async Task<int> ExecuteAsync(string sql) =>
-            await (await Shared.LazyDbConnection.GetConnectionAsync().ConfigureAwait(false))
-                .ExecuteAsync(sql, this, Shared.Transaction).ConfigureAwait(false);
-
-        protected async Task<TModel> ExecuteScalarAsync<TModel>(string sql) =>
-            await (await Shared.LazyDbConnection.GetConnectionAsync().ConfigureAwait(false))
-                .ExecuteScalarAsync<TModel>(sql, this, Shared.Transaction).ConfigureAwait(false);
-
-        protected Task<T> QueryFirstOrDefaultAsync(string sql) =>
-            QueryFirstOrDefaultAsync<T>(sql);
-
-        protected Task<T> ExecuteScalarAsync(string sql) =>
-            ExecuteScalarAsync<T>(sql);
+        private string PrepareSql(Action<ISqlDialect> sql)
+        {
+            if (sql == null) throw Errors.InvalidInput("null_sql");
+            if (SqlDialect == null) throw Errors.InvalidInput("null_sql_dialect");
+            
+            SqlDialect.Clear();
+            sql(SqlDialect);
+            
+            return SqlDialect.SqlText;
+        }
     }
 }

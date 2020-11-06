@@ -1,24 +1,27 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Meteor.Database;
+using Meteor.Database.SqlDialect;
 
 namespace Meteor.Operation.Db.Default
 {
     public class DbDefaultInsertAsync<T> : DbOperationAsync<T>
     {
         protected string TableName { get; set; }
-        protected string FieldNames { get; set; }
-        protected string FieldValues { get; set; }
+        protected string ColumnNames { get; set; }
+        protected string ColumnValues { get; set; }
 
-        public DbDefaultInsertAsync(SharedLazyDbConnection sharedLazyDbConnection, string tableName, string fieldNames, string fieldValues)
-            : base(sharedLazyDbConnection)
+        public DbDefaultInsertAsync(LazyDbConnection lazyDbConnection, ISqlDialect? sqlDialect, string tableName,
+            string columnNames, string columnValues)
+            : base(lazyDbConnection, sqlDialect)
         {
             TableName = tableName;
-            FieldNames = fieldNames;
-            FieldValues = fieldValues;
+            ColumnNames = columnNames;
+            ColumnValues = columnValues;
         }
 
         protected override async Task ExecutionAsync() =>
-            Result = await NewSql().InsertGetIdPgSqlAsync<T>(TableName, FieldNames, FieldValues).ConfigureAwait(false);
+            Result = await NewSql(sql => sql.InsertReturnId(TableName, ColumnNames, ColumnValues))
+                .ExecuteScalarAsync<T>().ConfigureAwait(false);
     }
 }

@@ -1,21 +1,24 @@
 using System.Threading.Tasks;
+using Meteor.Database;
+using Meteor.Database.SqlDialect;
 
 namespace Meteor.Operation.Db.Default
 {
     public class DbDefaultUpdateAsync : DbOperationAsync<bool>
     {
         protected string TableName { get; set; }
-        protected string SetFields { get; set; }
+        protected string SetColumns { get; set; }
 
-        public DbDefaultUpdateAsync(SharedLazyDbConnection sharedLazyDbConnection, string tableName, string setFields)
-            : base(sharedLazyDbConnection)
+        public DbDefaultUpdateAsync(LazyDbConnection lazyDbConnection, ISqlDialect? sqlDialect, string tableName,
+            string setColumns)
+            : base(lazyDbConnection, sqlDialect)
         {
             TableName = tableName;
-            SetFields = setFields;
+            SetColumns = setColumns;
         }
 
         protected override async Task ExecutionAsync() =>
-            Result = await NewSql().UpdateThisIdAsync(TableName, SetFields)
+            Result = await NewSql(sql => sql.UpdateThisId(TableName, SetColumns)).ExecuteAsync()
                 .ConfigureAwait(false) > 0;
     }
 }

@@ -1,64 +1,65 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Meteor.Database.Sql;
+using Meteor.Database;
+using Meteor.Database.SqlDialect;
+using Meteor.Utils;
 
 namespace Meteor.Operation.Db
 {
     public static class Extensions
     {
-        public static SqlGenerator AddPagination(this SqlGenerator sqlGenerator) =>
-            sqlGenerator.Limit("@Take").Offset("@Skip");
-        
-        public static SqlGenerator WhereThisId(this SqlGenerator sqlGenerator) =>
-            sqlGenerator.Where("id=@Id");
-        
-        public static SqlGenerator OrderById(this SqlGenerator sqlGenerator) =>
-            sqlGenerator.OrderBy("id ASC");
+        public static ISqlDialect? AddPagination(this ISqlDialect? sqlDialect) =>
+            sqlDialect?.Offset("@Skip", "@Take");
 
-        public static Task<IEnumerable<T>> SelectPageAsync<T>(this SqlGenerator sqlGenerator, string tableName) =>
-            sqlGenerator.Select(tableName).OrderById().AddPagination().QueryAsync<T>();
-        
-        public static Task<T> SelectThisIdAsync<T>(this SqlGenerator sqlGenerator, string tableName) =>
-            sqlGenerator.Select(tableName).WhereThisId().QueryFirstOrDefaultAsync<T>();
+        public static ISqlDialect? WhereThisId(this ISqlDialect? sqlDialect) =>
+            sqlDialect?.Where("id=@Id");
 
-        public static Task<long> SelectCountAsync(this SqlGenerator sqlGenerator, string tableName) => 
-            sqlGenerator.Select(tableName, "COUNT(*)").ExecuteScalarAsync<long>();
+        public static ISqlDialect? OrderById(this ISqlDialect? sqlDialect) =>
+            sqlDialect?.OrderBy("id ASC");
 
-        public static Task<T> InsertGetIdPgSqlAsync<T>(this SqlGenerator sqlGenerator, string tableName,
-            string fieldNames, string fieldValues) =>
-            sqlGenerator.Insert(tableName, fieldNames, fieldValues)
-                .Append("RETURNING id;")
-                .ExecuteScalarAsync<T>();
-        
-        public static Task<T> InsertGetIdSqliteAsync<T>(this SqlGenerator sqlGenerator, string tableName,
-            string fieldNames, string fieldValues) =>
-            sqlGenerator.Insert(tableName, fieldNames, fieldValues)
-                .EndStatement()
-                .Append("SELECT last_insert_rowid();")
-                .ExecuteScalarAsync<T>();
-        
-        public static Task<int> UpdateThisIdAsync(this SqlGenerator sqlGenerator, string tableName, string setFields) =>
-            sqlGenerator.Update(tableName, setFields).WhereThisId().ExecuteAsync();
-        
-        public static Task<int> DeleteThisIdAsync(this SqlGenerator sqlGenerator, string tableName) =>
-            sqlGenerator.Delete(tableName).WhereThisId().ExecuteAsync();
+        public static ISqlDialect? SelectPage(this ISqlDialect? sqlDialect, string tableName) =>
+            sqlDialect?.Clear().Select(tableName).OrderById().AddPagination();
 
-        public static QueryPage<T> CreateQueryPageAsync<T>(this DbQueryPageAsync<T> dbMessage,
-            IEnumerable<T> items, long totalCount) =>
-            new QueryPage<T>(items, dbMessage.Page, dbMessage.Take, totalCount);
-        public static async Task<QueryPage<T>> SelectQueryPageAsync<T>(this DbQueryPageAsync<T> dbMessage,
-            SqlGenerator selectItems, SqlGenerator selectCount)
+        public static ISqlDialect? SelectThisId(this ISqlDialect? sqlDialect, string tableName) =>
+            sqlDialect?.Clear().Select(tableName).WhereThisId();
+
+        public static ISqlDialect? SelectCount(this ISqlDialect? sqlDialect, string tableName) =>
+            sqlDialect?.Clear().Select(tableName, "COUNT(*)");
+
+        public static ISqlDialect? UpdateThisId(this ISqlDialect? sqlDialect, string tableName, string setColumns) =>
+            sqlDialect?.Update(tableName, setColumns).WhereThisId();
+
+        public static ISqlDialect? DeleteThisId(this ISqlDialect? sqlDialect, string tableName) =>
+            sqlDialect?.Delete(tableName).WhereThisId();
+
+        public static QueryPage<T> CreateQueryPage<T>(this DbQueryPageAsync<T> dbOperation, IEnumerable<T> items,
+            long totalCount)
         {
-            var items = await selectItems.AddPagination().QueryAsync<T>().ConfigureAwait(false);
-            var totalCount = await selectCount.ExecuteScalarAsync<long>().ConfigureAwait(false);
-            return dbMessage.CreateQueryPageAsync(items, totalCount);
+            if (dbOperation == null) throw Errors.InvalidInput("null_db_operation");
+
+            return new QueryPage<T>(items, dbOperation.Page, dbOperation.Take, totalCount);
         }
-        public static async Task<QueryPage<T>> SelectQueryPageAsync<T>(this SqlGenerator sqlGenerator, string tableName,
-            DbQueryPageAsync<T> dbMessage)
+
+        public static async Task<QueryPage<T>> SelectQueryPageAsync<T>(this DbQueryPageAsync<T> dbOperation,
+            ISqlDialect selectItems, ISqlDialect selectCount)
         {
-            var items = await sqlGenerator.SelectPageAsync<T>(tableName).ConfigureAwait(false);
-            var totalCount = await sqlGenerator.NewSql().SelectCountAsync(tableName).ConfigureAwait(false);
-            return new QueryPage<T>(items, dbMessage.Page, dbMessage.Take, totalCount);
+            var items = await dbOperation.LazyDbConnection.QueryAsync<T>(selectItems.AddPagination().SqlText, dbOperation)
+                .ConfigureAwait(false);
+            var totalCount = await dbOperation.LazyDbConnection.ExecuteScalarAsync<long>(selectCount.SqlText, dbOperation)
+                .ConfigureAwait(false);
+            return new QueryPage<T>(items, dbOperation.Page, dbOperation.Take, totalCount);
+        }
+
+        public static async Task<QueryPage<T>> SelectQueryPageAsync<T>(this DbQueryPageAsync<T> dbOperation,
+            ISqlDialect sqlDialect, string tableName)
+        {
+            var items = await dbOperation.LazyDbConnection.QueryAsync<T>(sqlDialect.SelectPage(tableName).SqlText, dbOperation)
+                .ConfigureAwait(false);
+            var totalCount = await dbOperation.LazyDbConnection
+                .ExecuteScalarAsync<long>(sqlDialect.SelectCount(tableName).SqlText, dbOperation)
+                .ConfigureAwait(false);
+            return new QueryPage<T>(items, dbOperation.Page, dbOperation.Take, totalCount);
         }
     }
 }

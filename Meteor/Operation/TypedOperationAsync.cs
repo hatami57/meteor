@@ -3,15 +3,9 @@ using Meteor.Utils;
 
 namespace Meteor.Operation
 {
-    public abstract class SharedOperationAsync<TResult, TShared> : SharedOperationAsync<TShared> where TShared : class?
+    public abstract class OperationAsync<TResult> : OperationAsync
     {
         public TResult Result { get; protected set; }
-
-        public new SharedOperationAsync<TResult, TShared> UseSharedObject(TShared shared) =>
-            (base.UseSharedObject(shared) as SharedOperationAsync<TResult, TShared>)!;
-
-        public Task<T> ShareAndExecuteAsync<T>(SharedOperationAsync<T, TShared> operation) =>
-            operation.UseSharedObject(Shared).ExecuteAsync();
 
         public new async Task<TResult> ExecuteAsync()
         {

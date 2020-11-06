@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Meteor.Database;
+using Meteor.Database.SqlDialect;
 using Meteor.Utils;
 
 namespace Meteor.Operation.Db
@@ -10,7 +11,8 @@ namespace Meteor.Operation.Db
         public int Take { get; set; } = 10;
         public int Skip => (Page - 1) * Take;
 
-        public DbQueryPageAsync(SharedLazyDbConnection sharedLazyDbConnection) : base(sharedLazyDbConnection)
+        protected DbQueryPageAsync(LazyDbConnection lazyDbConnection, ISqlDialect? sqlDialect)
+            : base(lazyDbConnection, sqlDialect)
         {
         }
 
