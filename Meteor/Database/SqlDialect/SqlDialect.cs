@@ -1,19 +1,15 @@
 ﻿using System;
 using Meteor.Utils;
 
-namespace Meteor.Database.SqlDialect.Ansi
+namespace Meteor.Database.SqlDialect
 {
-    public class Sql : ISqlDialect
+    public class SqlDialect : ISqlDialect
     {
-        private readonly ISqlDialectWhereBuilder _whereBuilder;
-        private readonly ISqlDialectUpdateBuilder _updateBuilder;
         public string SqlText { get; set; }
 
-        public Sql(string? sqlText = null, ISqlDialectWhereBuilder? whereBuilder = null, ISqlDialectUpdateBuilder? updateBuilder = null)
+        public SqlDialect(string? sqlText = null)
         {
             SqlText = sqlText ?? "";
-            _whereBuilder = whereBuilder ?? new SqlWhereBuilder();
-            _updateBuilder = updateBuilder ?? new SqlUpdateBuilder();
         }
 
         public ISqlDialect Select(string tableName, string columnNames = "*") =>
@@ -37,12 +33,14 @@ namespace Meteor.Database.SqlDialect.Ansi
         public ISqlDialect Where(string where) =>
             AppendSql("WHERE " + where);
 
-        public ISqlDialect Where(Action<ISqlDialectWhereBuilder> whereBuilder)
+        public ISqlDialect Where(Action<SqlWhereBuilder> whereBuilder)
         {
             if (whereBuilder == null) throw new ArgumentNullException(nameof(whereBuilder));
             
-            whereBuilder(_whereBuilder);
-            return AppendSql("WHERE " + _whereBuilder.SqlText);
+            var builder = new SqlWhereBuilder();
+            
+            whereBuilder(builder);
+            return AppendSql("WHERE " + builder.SqlText);
         }
 
         public ISqlDialect GroupBy(string columnNames) =>
@@ -70,12 +68,13 @@ namespace Meteor.Database.SqlDialect.Ansi
         public ISqlDialect Update(string tableName, string setColumns) =>
             AppendSql($"UPDATE {tableName} SET {setColumns}");
 
-        public ISqlDialect Update(string tableName, Action<ISqlDialectUpdateBuilder> updateBuilder)
+        public ISqlDialect Update(string tableName, Action<SqlUpdateBuilder> updateBuilder)
         {
             if (updateBuilder == null) throw new ArgumentNullException(nameof(updateBuilder));
             
-            updateBuilder(_updateBuilder);
-            return AppendSql($"UPDATE {tableName} SET {_updateBuilder.SqlText}");
+            var builder = new SqlUpdateBuilder();
+            updateBuilder(builder);
+            return AppendSql($"UPDATE {tableName} SET {builder.SqlText}");
         }
 
         public ISqlDialect Delete(string tableName) =>

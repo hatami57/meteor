@@ -8,8 +8,8 @@ namespace Meteor.Operation.Db.Default
     {
         protected string TableName { get; set; }
 
-        public DbDefaultDeleteAsync(LazyDbConnection lazyDbConnection, ISqlDialect? sqlDialect, string tableName)
-            : base(lazyDbConnection, sqlDialect)
+        public DbDefaultDeleteAsync(LazyDbConnection lazyDbConnection, ISqlFactory sqlFactory, string tableName)
+            : base(lazyDbConnection, sqlFactory)
         {
             TableName = tableName;
         }

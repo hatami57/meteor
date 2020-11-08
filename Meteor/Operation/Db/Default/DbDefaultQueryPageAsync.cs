@@ -8,12 +8,12 @@ namespace Meteor.Operation.Db.Default
     {
         protected string TableName { get; set; }
         
-        public DbDefaultQueryPageAsync(LazyDbConnection lazyDbConnection, ISqlDialect? sqlDialect, string tableName)
-            : base(lazyDbConnection, sqlDialect)
+        public DbDefaultQueryPageAsync(LazyDbConnection lazyDbConnection, ISqlFactory sqlFactory, string tableName)
+            : base(lazyDbConnection, sqlFactory)
         {
             TableName = tableName;
         }
         protected override async Task ExecutionAsync() => 
-            Result = await this.SelectQueryPageAsync(SqlDialect, TableName).ConfigureAwait(false);
+            Result = await this.SelectQueryPageAsync(SqlFactory, TableName).ConfigureAwait(false);
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Meteor.Database.SqlDialect.Ansi
+namespace Meteor.Database.SqlDialect
 {
-    public class SqlWhereBuilder : ISqlDialectWhereBuilder
+    public class SqlWhereBuilder
     {
         public string SqlText => _whereConditions.Count == 0
             ? ""
@@ -10,16 +10,16 @@ namespace Meteor.Database.SqlDialect.Ansi
 
         private readonly List<string> _whereConditions = new List<string>();
 
-        public ISqlDialectWhereBuilder Where(string condition)
+        public SqlWhereBuilder Where(string condition)
         {
             _whereConditions.Add(condition);
             return this;
         }
 
-        public ISqlDialectWhereBuilder And(string condition) =>
+        public SqlWhereBuilder And(string condition) =>
             Where(condition);
 
-        public ISqlDialectWhereBuilder When(bool when, string condition) =>
+        public SqlWhereBuilder When(bool when, string condition) =>
             when ? Where(condition) : this;
     }
 }

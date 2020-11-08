@@ -11,8 +11,8 @@ namespace Meteor.Operation.Db
         public int Take { get; set; } = 10;
         public int Skip => (Page - 1) * Take;
 
-        protected DbQueryPageAsync(LazyDbConnection lazyDbConnection, ISqlDialect? sqlDialect)
-            : base(lazyDbConnection, sqlDialect)
+        protected DbQueryPageAsync(LazyDbConnection lazyDbConnection, ISqlFactory sqlFactory)
+            : base(lazyDbConnection, sqlFactory)
         {
         }
 

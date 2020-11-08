@@ -12,7 +12,7 @@ namespace Meteor.Database.SqlDialect
         public ISqlDialect RightJoin(string tableName, string onClause);
         public ISqlDialect FullJoin(string tableName, string onClause);
         public ISqlDialect Where(string where);
-        public ISqlDialect Where(Action<ISqlDialectWhereBuilder> whereBuilder);
+        public ISqlDialect Where(Action<SqlWhereBuilder> whereBuilder);
         public ISqlDialect GroupBy(string columnNames);
         public ISqlDialect Having(string having);
         public ISqlDialect OrderBy(string columnNames);
@@ -22,7 +22,7 @@ namespace Meteor.Database.SqlDialect
         public ISqlDialect InsertReturnId(string tableName, string columnNames, string values);
 
         public ISqlDialect Update(string tableName, string setColumns);
-        public ISqlDialect Update(string tableName, Action<ISqlDialectUpdateBuilder> updateBuilder);
+        public ISqlDialect Update(string tableName, Action<SqlUpdateBuilder> updateBuilder);
 
         public ISqlDialect Delete(string tableName);
 

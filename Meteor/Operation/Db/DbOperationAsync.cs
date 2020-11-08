@@ -10,12 +10,12 @@ namespace Meteor.Operation.Db
     public abstract class DbOperationAsync<T> : OperationAsync<T>
     {
         public LazyDbConnection LazyDbConnection { get; private set; }
-        protected ISqlDialect? SqlDialect { get; private set; }
+        protected ISqlFactory SqlFactory { get; private set; }
 
-        public DbOperationAsync(LazyDbConnection lazyDbConnection, ISqlDialect? sqlDialect)
+        public DbOperationAsync(LazyDbConnection lazyDbConnection, ISqlFactory sqlFactory)
         {
             LazyDbConnection = lazyDbConnection;
-            SqlDialect = sqlDialect;
+            SqlFactory = sqlFactory;
         }
 
         /// <summary>
@@ -41,21 +41,18 @@ namespace Meteor.Operation.Db
             return LazyDbConnection.EnsureInTransactionAsync(func, isolationLevel);
         }
 
-        protected RunnableSql NewSql(Action<ISqlDialect> sql, object? param = null) =>
+        protected RunnableSql NewSql(Func<ISqlDialect, ISqlDialect> sql, object? param = null) =>
             new RunnableSql(LazyDbConnection, PrepareSql(sql), param ?? this);
         
         protected RunnableSql NewSql(string sqlText, object? param = null) =>
             new RunnableSql(LazyDbConnection, sqlText, param ?? this);
 
-        private string PrepareSql(Action<ISqlDialect> sql)
+        private string PrepareSql(Func<ISqlDialect, ISqlDialect> sql)
         {
             if (sql == null) throw Errors.InvalidInput("null_sql");
-            if (SqlDialect == null) throw Errors.InvalidInput("null_sql_dialect");
-            
-            SqlDialect.Clear();
-            sql(SqlDialect);
-            
-            return SqlDialect.SqlText;
+            if (SqlFactory == null) throw Errors.InvalidInput("null_sql_factory");
+
+            return sql(SqlFactory.Create()).SqlText;
         }
     }
 }

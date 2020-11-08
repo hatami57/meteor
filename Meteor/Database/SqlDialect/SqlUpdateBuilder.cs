@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Meteor.Database.SqlDialect.Ansi
+namespace Meteor.Database.SqlDialect
 {
-    public class SqlUpdateBuilder : ISqlDialectUpdateBuilder
+    public class SqlUpdateBuilder
     {
         public string SqlText => _updateColumns.Count == 0
             ? ""
@@ -10,13 +10,13 @@ namespace Meteor.Database.SqlDialect.Ansi
 
         private readonly List<string> _updateColumns = new List<string>();
 
-        public ISqlDialectUpdateBuilder Set(string setColumn)
+        public SqlUpdateBuilder Set(string setColumn)
         {
             _updateColumns.Add(setColumn);
             return this;
         }
 
-        public ISqlDialectUpdateBuilder When(bool when, string setColumn) =>
+        public SqlUpdateBuilder When(bool when, string setColumn) =>
             when ? Set(setColumn) : this;
     }
 }
