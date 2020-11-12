@@ -71,7 +71,7 @@ namespace Meteor.Operation
                 Log.Verbose("calling {MethodName}", nameof(ValidateAfterExecutionAsync));
                 await operation.ValidateAfterExecutionAsync().ConfigureAwait(false);
 
-                await Errors.IgnoreAsync(operation.OnSuccessAsync()).ConfigureAwait(false);
+                await Errors.IgnoreAsync(operation.OnSuccessAsync).ConfigureAwait(false);
                 Log.Debug("operation executed successfully");
                 
                 State = OperationState.Succeed;
@@ -80,7 +80,7 @@ namespace Meteor.Operation
             {
                 State = OperationState.Failed;
                 if (operation != null)
-                    await Errors.IgnoreAsync(operation.OnErrorAsync(e)).ConfigureAwait(false);
+                    await Errors.IgnoreAsync(operation.OnErrorAsync).ConfigureAwait(false);
                 Log.Error(e, "operation execution failed");
                 throw;
             }

@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 using Dapper;
-using Meteor.Database.SqlDialect;
 using Meteor.Utils;
 
 namespace Meteor.Database

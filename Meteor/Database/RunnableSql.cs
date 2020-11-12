@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
-using Meteor.Database.SqlDialect;
-using Meteor.Utils;
 
 namespace Meteor.Database
 {

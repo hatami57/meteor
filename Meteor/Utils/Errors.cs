@@ -77,14 +77,14 @@ namespace Meteor.Utils
         }
 
         /// <inheritdoc cref="Ignore"/>
-        public static async Task<bool> IgnoreAsync(Task? operation)
+        public static async Task<bool> IgnoreAsync(Func<Task>? operation)
         {
             if (operation == null)
                 return false;
 
             try
             {
-                await operation.ConfigureAwait(false);
+                await operation().ConfigureAwait(false);
                 return true;
             }
             catch
