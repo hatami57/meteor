@@ -93,6 +93,24 @@ namespace Meteor.Utils
                 return false;
             }
         }
+        
+        /// <inheritdoc cref="Ignore"/>
+        public static async Task<bool> IgnoreAsync<T>(Func<T, Task>? operation, T param)
+        {
+            if (operation == null)
+                return false;
+
+            try
+            {
+                await operation(param).ConfigureAwait(false);
+                return true;
+            }
+            catch
+            {
+                // ignored
+                return false;
+            }
+        }
 
         public static async Task<T> Ignore<T>(Task<T>? operation, T defaultValue = default)
         {

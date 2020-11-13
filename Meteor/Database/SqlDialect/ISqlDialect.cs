@@ -28,7 +28,7 @@ namespace Meteor.Database.SqlDialect
 
         public ISqlDialect EndStatement();
 
-        public ISqlDialect AppendSql(string sql);
+        public ISqlDialect AppendSql(ReadOnlySpan<char> sql);
 
         public ISqlDialect Clear();
     }

@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Meteor.Operation;
 using Meteor.Utils;
 
-namespace Meteor.Test.Assets
+namespace Meteor.Test.Helpers
 {
-    class SimpleOperation : OperationAsync
+    public class SimpleOperation : OperationAsync
     {
         public bool ShouldThrowInPrepareProperties { get; set; }
         public bool ShouldThrowInValidateProperties { get; set; }
@@ -21,7 +21,7 @@ namespace Meteor.Test.Assets
         public bool OnErrorIsCalled { get; private set; }
         public bool FinalizeIsCalled { get; private set; }
         public string? ThrowAtMethod { get; private set; }
-
+        
         protected override Task<OperationAsync> PreparePropertiesAsync()
         {
             if (ShouldThrowInPrepareProperties)

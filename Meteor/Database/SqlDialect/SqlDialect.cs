@@ -1,15 +1,27 @@
 ﻿using System;
+using System.Text;
 using Meteor.Utils;
 
 namespace Meteor.Database.SqlDialect
 {
     public class SqlDialect : ISqlDialect
     {
-        public string SqlText { get; set; }
+        private readonly StringBuilder _sb;
+        private char _lastChar;
+        
+        public string SqlText
+        {
+            get => _sb.ToString();
+            set
+            {
+                _sb.Clear();
+                _sb.Append(value);
+            }
+        }
 
         public SqlDialect(string? sqlText = null)
         {
-            SqlText = sqlText ?? "";
+            _sb = new StringBuilder(sqlText);
         }
 
         public ISqlDialect Select(string tableName, string columnNames = "*") =>
@@ -82,22 +94,28 @@ namespace Meteor.Database.SqlDialect
 
         public ISqlDialect EndStatement()
         {
-            SqlText += ";";
+            _sb.Append(";");
             return this;
         }
 
-        public ISqlDialect AppendSql(string sql)
+        public ISqlDialect AppendSql(ReadOnlySpan<char> sql)
         {
-            if (string.IsNullOrWhiteSpace(sql))
+            if (sql.IsWhiteSpace())
                 return this;
+            
+            var needWhitespace = _sb.Length > 0 && !char.IsWhiteSpace(_lastChar);
+            if (needWhitespace)
+                _sb.Append(' ');
+            
+            _sb.Append(sql);
+            _lastChar = sql[^1];
 
-            SqlText += " " + sql.Trim();
             return this;
         }
 
         public ISqlDialect Clear()
         {
-            SqlText = "";
+            _sb.Clear();
             return this;
         }
     }

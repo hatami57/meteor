@@ -43,7 +43,7 @@ namespace Meteor.Operation
         {
             OperationAsync? operation = null;
             var operationName = GetType().FullName;
-            
+
             try
             {
                 Log.Debug("start executing {OperationName} operation, with {@Properties}", operationName, this);
@@ -51,19 +51,19 @@ namespace Meteor.Operation
                 Log.Verbose("calling {MethodName}", nameof(PreparePropertiesAsync));
                 operation = await PreparePropertiesAsync().ConfigureAwait(false);
                 State = OperationState.PreparedProperties;
-                
+
                 Log.Verbose("calling {MethodName}", nameof(ValidatePropertiesAsync));
                 await operation.ValidatePropertiesAsync().ConfigureAwait(false);
                 State = OperationState.ValidatedProperties;
-                
+
                 Log.Verbose("calling {MethodName}", nameof(PrepareExecutionAsync));
                 await operation.PrepareExecutionAsync().ConfigureAwait(false);
                 State = OperationState.PreparedExecution;
-                
+
                 Log.Verbose("calling {MethodName}", nameof(ValidateBeforeExecutionAsync));
                 await operation.ValidateBeforeExecutionAsync().ConfigureAwait(false);
                 State = OperationState.ValidatedBeforeExecution;
-                
+
                 Log.Verbose("calling {MethodName}", nameof(ExecutionAsync));
                 await operation.ExecutionAsync().ConfigureAwait(false);
                 State = OperationState.Executed;
@@ -73,25 +73,22 @@ namespace Meteor.Operation
 
                 await Errors.IgnoreAsync(operation.OnSuccessAsync).ConfigureAwait(false);
                 Log.Debug("operation executed successfully");
-                
+
                 State = OperationState.Succeed;
             }
             catch (Exception e)
             {
                 State = OperationState.Failed;
-                if (operation != null)
-                    await Errors.IgnoreAsync(operation.OnErrorAsync).ConfigureAwait(false);
+                var onErrorAsync = operation != null ? operation.OnErrorAsync : new Func<Exception, Task>(OnErrorAsync);
+                await Errors.IgnoreAsync(onErrorAsync, e).ConfigureAwait(false);
                 Log.Error(e, "operation execution failed");
                 throw;
             }
             finally
             {
-                if (operation != null)
-                {
-                    Log.Verbose("calling {MethodName}", nameof(FinalizeAsync));
-                    await operation.FinalizeAsync().ConfigureAwait(false);
-                }
-                
+                Log.Verbose("calling {MethodName}", nameof(FinalizeAsync));
+                await (operation?.FinalizeAsync() ?? FinalizeAsync()).ConfigureAwait(false);
+
                 Log.Debug("finish executing {OperationName} operation", operationName);
             }
         }
