@@ -6,7 +6,7 @@ namespace Meteor.Test.Database
     public class SqlDialectSelectTest
     {
         [Fact]
-        public void SelectSpecificColumnsTest()
+        public void SelectSpecificColumns()
         {
             var sql = new SqlDialect();
             sql.Select("table1", "c1, c2, c3");
@@ -15,7 +15,7 @@ namespace Meteor.Test.Database
         }
         
         [Fact]
-        public void SelectAllColumnsTest()
+        public void SelectAllColumns()
         {
             var sql = new SqlDialect();
             sql.Select("table1");

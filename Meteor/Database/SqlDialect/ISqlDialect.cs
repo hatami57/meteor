@@ -18,8 +18,9 @@ namespace Meteor.Database.SqlDialect
         public ISqlDialect OrderBy(string columnNames);
         public ISqlDialect Offset(string? offset, string? fetchFirst);
 
-        public ISqlDialect Insert(string tableName, string columnNames, string values);
-        public ISqlDialect InsertReturnId(string tableName, string columnNames, string values);
+        public ISqlDialect Insert(string tableName, string? columnNames, string values);
+        public ISqlDialect InsertCustomValues(string tableName, string? columnNames, string customValues);
+        public ISqlDialect InsertReturnId(string tableName, string columnNames, string values, string idColumnName = "id");
 
         public ISqlDialect Update(string tableName, string setColumns);
         public ISqlDialect Update(string tableName, Action<SqlUpdateBuilder> updateBuilder);

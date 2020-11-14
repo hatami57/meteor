@@ -16,12 +16,14 @@ namespace Meteor.Database.SqlDialect
             {
                 _sb.Clear();
                 _sb.Append(value);
+                _lastChar = value?.Length > 0 ? value[^1] : char.MinValue;
             }
         }
 
         public SqlDialect(string? sqlText = null)
         {
             _sb = new StringBuilder(sqlText);
+            _lastChar = char.MinValue;
         }
 
         public ISqlDialect Select(string tableName, string columnNames = "*") =>
@@ -71,10 +73,16 @@ namespace Meteor.Database.SqlDialect
             return AppendSql($"{offset} {fetchFirst}".Trim());
         }
 
-        public ISqlDialect Insert(string tableName, string columnNames, string values) =>
-            AppendSql($"INSERT INTO {tableName} ({columnNames}) VALUES ({values})");
+        public ISqlDialect Insert(string tableName, string? columnNames, string values) =>
+            InsertCustomValues(tableName, columnNames, $"VALUES ({values})");
 
-        public ISqlDialect InsertReturnId(string tableName, string columnNames, string values) =>
+        public ISqlDialect InsertCustomValues(string tableName, string? columnNames, string customValues)
+        {
+            columnNames = string.IsNullOrWhiteSpace(columnNames) ? "" : $" ({columnNames})";
+            return AppendSql($"INSERT INTO {tableName}{columnNames} {customValues}");
+        }
+
+        public ISqlDialect InsertReturnId(string tableName, string columnNames, string values, string idColumnName = "id") =>
             throw Errors.InvalidOperation("not_implemented");
 
         public ISqlDialect Update(string tableName, string setColumns) =>
@@ -116,6 +124,7 @@ namespace Meteor.Database.SqlDialect
         public ISqlDialect Clear()
         {
             _sb.Clear();
+            _lastChar = char.MinValue;
             return this;
         }
     }

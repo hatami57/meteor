@@ -2,7 +2,7 @@ namespace Meteor.Database.SqlDialect.MsSql
 {
     public class MsSqlDialect : SqlDialect
     {
-        public new ISqlDialect InsertReturnId(string tableName, string columnNames, string values) =>
-            AppendSql($"INSERT INTO {tableName} ({columnNames}) OUTPUT INSERTED.Id VALUES({values})");
+        public new ISqlDialect InsertReturnId(string tableName, string? columnNames, string values, string idColumnName = "Id") =>
+            InsertCustomValues(tableName, columnNames, $"OUTPUT INSERTED.{idColumnName} VALUES ({values})");
     }
 }

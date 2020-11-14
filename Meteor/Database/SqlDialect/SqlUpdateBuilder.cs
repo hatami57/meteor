@@ -6,7 +6,7 @@ namespace Meteor.Database.SqlDialect
     {
         public string SqlText => _updateColumns.Count == 0
             ? ""
-            : string.Join(",", _updateColumns);
+            : string.Join(", ", _updateColumns);
 
         private readonly List<string> _updateColumns = new List<string>();
 

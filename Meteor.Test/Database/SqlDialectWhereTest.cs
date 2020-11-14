@@ -7,7 +7,7 @@ namespace Meteor.Test.Database
     public class SqlDialectWhereTest
     {
         [Fact]
-        public void NormalWhereTest()
+        public void NormalWhere()
         {
             var sql = new SqlDialect();
             sql.Select("table1", "c1, c2, c3")
@@ -17,7 +17,7 @@ namespace Meteor.Test.Database
         }
         
         [Fact]
-        public void WhereBuilderTest()
+        public void WhereBuilder()
         {
             var sql = new SqlDialect();
             sql.Select("table1")
@@ -30,7 +30,7 @@ namespace Meteor.Test.Database
         }
         
         [Fact]
-        public void WhereThisIdTest()
+        public void WhereThisId()
         {
             var sql = new SqlDialect();
             sql.Select("table1")

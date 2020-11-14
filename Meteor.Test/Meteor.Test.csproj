@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Database\MsSql" />
     <Folder Include="Database\Sqlite\" />
     <Folder Include="Database\PostgreSql\" />
     <Folder Include="Operation\Db\Default\" />
