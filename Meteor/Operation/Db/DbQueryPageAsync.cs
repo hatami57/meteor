@@ -5,23 +5,21 @@ using Meteor.Utils;
 
 namespace Meteor.Operation.Db
 {
-    public abstract class DbQueryPageAsync<T> : DbOperationAsync<QueryPage<T>>
+    public abstract class DbQueryPageAsync<TInput, TOutput> : DbOperationAsync<TInput, QueryPage<TOutput>> where TInput : IQueryPageInput
     {
-        public int Page { get; set; } = 1;
-        public int Take { get; set; } = 10;
-        public int Skip => (Page - 1) * Take;
-
         protected DbQueryPageAsync(LazyDbConnection lazyDbConnection, ISqlFactory sqlFactory)
             : base(lazyDbConnection, sqlFactory)
         {
         }
 
-        protected override Task ValidatePropertiesAsync()
+        protected override Task<TInput> PrepareInputAsync()
         {
-            if (Page <= 0 || Take <= 0)
-                throw Errors.InvalidInput();
+            if (Input.Page <= 0)
+                Input.Page = 1;
+            if (Input.Take <= 0)
+                Input.Take = 10;
 
-            return Task.CompletedTask;
+            return Task.FromResult(Input);
         }
     }
 }

@@ -11,10 +11,10 @@ namespace Meteor.Test.Operation
         [Fact]
         public async Task ShouldThrowInPrepareProperties()
         {
-            var op = new SimpleOperation {ShouldThrowInPrepareProperties = true};
+            var op = new SimpleOperation {ShouldThrowInPrepareInput = true};
 
             await Assert.ThrowsAsync<Error>(op.ExecuteAsync);
-            Assert.Equal("PreparePropertiesAsync", op.ThrowAtMethod);
+            Assert.Equal("PrepareInputAsync", op.ThrowAtMethod);
             Assert.Equal(OperationState.Failed, op.State);
             Assert.True(op.OnErrorIsCalled);
             Assert.False(op.OnSuccessIsCalled);
@@ -24,10 +24,10 @@ namespace Meteor.Test.Operation
         [Fact]
         public async Task ShouldThrowInValidateProperties()
         {
-            var op = new SimpleOperation {ShouldThrowInValidateProperties = true};
+            var op = new SimpleOperation {ShouldThrowInValidateInput = true};
 
             await Assert.ThrowsAsync<Error>(op.ExecuteAsync);
-            Assert.Equal("ValidatePropertiesAsync", op.ThrowAtMethod);
+            Assert.Equal("ValidateInputAsync", op.ThrowAtMethod);
             Assert.Equal(OperationState.Failed, op.State);
             Assert.True(op.OnErrorIsCalled);
             Assert.False(op.OnSuccessIsCalled);

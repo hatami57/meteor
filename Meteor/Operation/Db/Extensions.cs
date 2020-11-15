@@ -33,36 +33,36 @@ namespace Meteor.Operation.Db
         public static ISqlDialect DeleteThisId(this ISqlDialect sqlDialect, string tableName) =>
             sqlDialect.Clear().Delete(tableName).WhereThisId();
 
-        public static QueryPage<T> CreateQueryPage<T>(this DbQueryPageAsync<T> dbOperation, IEnumerable<T> items,
-            long totalCount)
+        public static QueryPage<TOutput> CreateQueryPage<TInput, TOutput>(this DbQueryPageAsync<TInput, TOutput> dbOperation, IEnumerable<TOutput> items,
+            long totalCount) where TInput : IQueryPageInput
         {
             if (dbOperation == null) throw Errors.InvalidInput("null_db_operation");
 
-            return new QueryPage<T>(items, dbOperation.Page, dbOperation.Take, totalCount);
+            return new QueryPage<TOutput>(items, dbOperation.Input.Page, dbOperation.Input.Take, totalCount);
         }
 
-        public static async Task<QueryPage<T>> SelectQueryPageAsync<T>(this DbQueryPageAsync<T> dbOperation,
-            ISqlDialect selectItems, ISqlDialect selectCount)
+        public static async Task<QueryPage<TOutput>> SelectQueryPageAsync<TInput, TOutput>(this DbQueryPageAsync<TInput, TOutput> dbOperation,
+            ISqlDialect selectItems, ISqlDialect selectCount) where TInput : IQueryPageInput
         {
             var items = await dbOperation.LazyDbConnection
-                .QueryAsync<T>(selectItems.AddPagination().SqlText, dbOperation)
+                .QueryAsync<TOutput>(selectItems.AddPagination().SqlText, dbOperation)
                 .ConfigureAwait(false);
             var totalCount = await dbOperation.LazyDbConnection
                 .ExecuteScalarAsync<long>(selectCount.SqlText, dbOperation)
                 .ConfigureAwait(false);
-            return new QueryPage<T>(items, dbOperation.Page, dbOperation.Take, totalCount);
+            return new QueryPage<TOutput>(items, dbOperation.Input.Page, dbOperation.Input.Take, totalCount);
         }
 
-        public static async Task<QueryPage<T>> SelectQueryPageAsync<T>(this DbQueryPageAsync<T> dbOperation,
-            ISqlFactory sqlFactory, string tableName)
+        public static async Task<QueryPage<TOutput>> SelectQueryPageAsync<TInput, TOutput>(this DbQueryPageAsync<TInput, TOutput> dbOperation,
+            ISqlFactory sqlFactory, string tableName) where TInput : IQueryPageInput
         {
             var items = await dbOperation.LazyDbConnection
-                .QueryAsync<T>(sqlFactory.Create().SelectPage(tableName).SqlText, dbOperation)
+                .QueryAsync<TOutput>(sqlFactory.Create().SelectPage(tableName).SqlText, dbOperation)
                 .ConfigureAwait(false);
             var totalCount = await dbOperation.LazyDbConnection
                 .ExecuteScalarAsync<long>(sqlFactory.Create().SelectCount(tableName).SqlText, dbOperation)
                 .ConfigureAwait(false);
-            return new QueryPage<T>(items, dbOperation.Page, dbOperation.Take, totalCount);
+            return new QueryPage<TOutput>(items, dbOperation.Input.Page, dbOperation.Input.Take, totalCount);
         }
     }
 }

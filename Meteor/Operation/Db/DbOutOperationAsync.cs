@@ -7,9 +7,9 @@ using Meteor.Utils;
 
 namespace Meteor.Operation.Db
 {
-	public abstract class DbInOperationAsync<TIn> : DbOperationAsync<TIn, NoType>
+	public abstract class DbOutOperationAsync<TOutput> : DbOperationAsync<NoType, TOutput>
 	{
-		public DbInOperationAsync(LazyDbConnection lazyDbConnection, ISqlFactory sqlFactory) : base(lazyDbConnection, sqlFactory)
+		public DbOutOperationAsync(LazyDbConnection lazyDbConnection, ISqlFactory sqlFactory) : base(lazyDbConnection, sqlFactory)
 		{
 		}
 	}

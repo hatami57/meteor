@@ -5,7 +5,7 @@ using Meteor.Database.SqlDialect;
 
 namespace Meteor.Operation.Db.Default
 {
-    public class DbDefaultInsertAsync<T> : DbOperationAsync<T>
+    public class DbDefaultInsertAsync<TOutput> : DbOutOperationAsync<TOutput>
     {
         protected string TableName { get; set; }
         protected string ColumnNames { get; set; }
@@ -21,7 +21,7 @@ namespace Meteor.Operation.Db.Default
         }
 
         protected override async Task ExecutionAsync() =>
-            Result = await NewSql(sql => sql.InsertReturnId(TableName, ColumnNames, ColumnValues))
-                .ExecuteScalarAsync<T>().ConfigureAwait(false);
+            Output = await NewSql(sql => sql.InsertReturnId(TableName, ColumnNames, ColumnValues))
+                .ExecuteScalarAsync<TOutput>().ConfigureAwait(false);
     }
 }

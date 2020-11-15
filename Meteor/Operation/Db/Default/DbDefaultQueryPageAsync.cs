@@ -4,7 +4,7 @@ using Meteor.Database.SqlDialect;
 
 namespace Meteor.Operation.Db.Default
 {
-    public class DbDefaultQueryPageAsync<T> : DbQueryPageAsync<T>
+    public class DbDefaultQueryPageAsync<TOutput> : DbQueryPageAsync<DefaultQueryPageInput, TOutput>
     {
         protected string TableName { get; set; }
         
@@ -14,6 +14,6 @@ namespace Meteor.Operation.Db.Default
             TableName = tableName;
         }
         protected override async Task ExecutionAsync() => 
-            Result = await this.SelectQueryPageAsync(SqlFactory, TableName).ConfigureAwait(false);
+            Output = await this.SelectQueryPageAsync(SqlFactory, TableName).ConfigureAwait(false);
     }
 }

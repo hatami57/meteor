@@ -4,7 +4,7 @@ using Meteor.Database.SqlDialect;
 
 namespace Meteor.Operation.Db.Default
 {
-    public class DbDefaultDeleteAsync : DbOperationAsync<bool>
+    public class DbDefaultDeleteAsync<TId> : DbOperationAsync<DefaultId<TId>, bool>
     {
         protected string TableName { get; set; }
 
@@ -15,7 +15,7 @@ namespace Meteor.Operation.Db.Default
         }
 
         protected override async Task ExecutionAsync() =>
-            Result = await NewSql(sql => sql.DeleteThisId(TableName)).ExecuteAsync()
+            Output = await NewSql(sql => sql.DeleteThisId(TableName)).ExecuteAsync()
                 .ConfigureAwait(false) > 0;
     }
 }

@@ -1,9 +1,9 @@
-using System.Threading.Tasks;
 using Meteor.Utils;
+using System.Threading.Tasks;
 
 namespace Meteor.Operation
 {
-    public abstract class InOperationAsync<TIn> : OperationAsync<TIn, NoType>
+    public abstract class InOperationAsync<TInput> : OperationAsync<TInput, NoType>
     {
     }
 }

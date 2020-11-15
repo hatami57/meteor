@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Meteor.Operation;
 using Serilog;
@@ -90,6 +91,8 @@ namespace Meteor.Utils
 
         public async Task<OperationResult<T>> Catch(Func<OperationResult<T>, Task<T>> func) =>
             (Error != null) ? await Try(() => func(this)).ConfigureAwait(false) : this;
+
+        public OperationResult ToOperationResult() => this;
 
         public static async Task<OperationResult<T>> Try(Func<Task<T>> func)
         {

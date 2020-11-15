@@ -8,23 +8,23 @@ namespace Meteor.Test.Operation
 {
     public class FailOperationTest : OperationAsync
     {
-        protected override Task<OperationAsync> PreparePropertiesAsync()
+        protected override Task ValidateInputAsync()
         {
             Assert.Equal(OperationState.Created, State);
 
-            return base.PreparePropertiesAsync();
+            return base.ValidateInputAsync();
         }
-        
-        protected override Task ValidatePropertiesAsync()
+
+        protected override Task<NoType> PrepareInputAsync()
         {
-            Assert.Equal(OperationState.PreparedProperties, State);
-            
-            return base.ValidatePropertiesAsync();
+            Assert.Equal(OperationState.ValidatedInput, State);
+
+            return base.PrepareInputAsync();
         }
         
         protected override Task PrepareExecutionAsync()
         {
-            Assert.Equal(OperationState.ValidatedProperties, State);
+            Assert.Equal(OperationState.PreparedInput, State);
             
             return base.PrepareExecutionAsync();
         }

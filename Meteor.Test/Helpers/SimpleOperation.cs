@@ -7,8 +7,8 @@ namespace Meteor.Test.Helpers
 {
     public class SimpleOperation : OperationAsync
     {
-        public bool ShouldThrowInPrepareProperties { get; set; }
-        public bool ShouldThrowInValidateProperties { get; set; }
+        public bool ShouldThrowInValidateInput { get; set; }
+        public bool ShouldThrowInPrepareInput { get; set; }
         public bool ShouldThrowInValidateBeforeExecution { get; set; }
         public bool ShouldThrowInPrepareExecution { get; set; }
         public bool ShouldThrowInExecution { get; set; }
@@ -21,27 +21,27 @@ namespace Meteor.Test.Helpers
         public bool OnErrorIsCalled { get; private set; }
         public bool FinalizeIsCalled { get; private set; }
         public string? ThrowAtMethod { get; private set; }
-        
-        protected override Task<OperationAsync> PreparePropertiesAsync()
+
+        protected override Task ValidateInputAsync()
         {
-            if (ShouldThrowInPrepareProperties)
+            if (ShouldThrowInValidateInput)
             {
-                ThrowAtMethod = nameof(PreparePropertiesAsync);
+                ThrowAtMethod = nameof(ValidateInputAsync);
                 throw Errors.InvalidOperation();
             }
 
-            return base.PreparePropertiesAsync();
+            return base.ValidateInputAsync();
         }
 
-        protected override Task ValidatePropertiesAsync()
+        protected override Task<NoType> PrepareInputAsync()
         {
-            if (ShouldThrowInValidateProperties)
+            if (ShouldThrowInPrepareInput)
             {
-                ThrowAtMethod = nameof(ValidatePropertiesAsync);
+                ThrowAtMethod = nameof(PrepareInputAsync);
                 throw Errors.InvalidOperation();
             }
 
-            return base.ValidatePropertiesAsync();
+            return base.PrepareInputAsync();
         }
 
         protected override Task ValidateBeforeExecutionAsync()

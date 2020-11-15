@@ -4,7 +4,7 @@ using Meteor.Database.SqlDialect;
 
 namespace Meteor.Operation.Db.Default
 {
-    public class DbDefaultUpdateAsync : DbOperationAsync<bool>
+    public class DbDefaultUpdateAsync<TInput, TId> : DbOperationAsync<TInput, bool> where TInput : IHaveId<TId>
     {
         protected string TableName { get; set; }
         protected string SetColumns { get; set; }
@@ -18,7 +18,7 @@ namespace Meteor.Operation.Db.Default
         }
 
         protected override async Task ExecutionAsync() =>
-            Result = await NewSql(sql => sql.UpdateThisId(TableName, SetColumns)).ExecuteAsync()
-                .ConfigureAwait(false) > 0;
+            Output = await NewSql(sql => sql.UpdateThisId(TableName, SetColumns))
+            .ExecuteAsync().ConfigureAwait(false) > 0;
     }
 }

@@ -3,7 +3,7 @@ using Meteor.Utils;
 
 namespace Meteor.Operation
 {
-    public abstract class OutOperationAsync<TOutput> : OperationAsync<NoType, TOutput>
+    public abstract class OperationAsync : OperationAsync<NoType, NoType>
     {
     }
 }
