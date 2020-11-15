@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Meteor.Operation.Db.Default;
 
-namespace Meteor.Sample.Operations.Db.User
+namespace Meteor.Sample.Operations.Db.Models.User
 {
-    public record User
+    public record User : IDbModel<int>
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

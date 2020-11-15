@@ -2,7 +2,7 @@
 using Meteor.Database.SqlDialect;
 using Meteor.Operation.Db.Default;
 
-namespace Meteor.Sample.Operations.Db.User.Commands
+namespace Meteor.Sample.Operations.Db.Models.User.Commands
 {
     public class DeleteUser : DbDefaultDeleteAsync<int>
     {

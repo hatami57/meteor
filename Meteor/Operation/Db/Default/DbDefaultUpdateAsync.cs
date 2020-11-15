@@ -4,7 +4,7 @@ using Meteor.Database.SqlDialect;
 
 namespace Meteor.Operation.Db.Default
 {
-    public class DbDefaultUpdateAsync<TInput, TId> : DbOperationAsync<TInput, bool> where TInput : IHaveId<TId>
+    public class DbDefaultUpdateAsync<TId, TInput> : DbOperationAsync<TInput, bool> where TInput : IDbModel<TId>
     {
         protected string TableName { get; set; }
         protected string SetColumns { get; set; }

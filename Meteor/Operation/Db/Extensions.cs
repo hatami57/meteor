@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Meteor.Database;
 using Meteor.Database.SqlDialect;
 using Meteor.Utils;
 
@@ -10,7 +8,7 @@ namespace Meteor.Operation.Db
     public static class Extensions
     {
         public static ISqlDialect AddPagination(this ISqlDialect sqlDialect) =>
-            sqlDialect.Offset("@Skip", "@Take");
+            sqlDialect.Offset("@Offset", "@Take");
 
         public static ISqlDialect WhereThisId(this ISqlDialect sqlDialect) =>
             sqlDialect.Where("id=@Id");
@@ -45,10 +43,10 @@ namespace Meteor.Operation.Db
             ISqlDialect selectItems, ISqlDialect selectCount) where TInput : IQueryPageInput
         {
             var items = await dbOperation.LazyDbConnection
-                .QueryAsync<TOutput>(selectItems.AddPagination().SqlText, dbOperation)
+                .QueryAsync<TOutput>(selectItems.AddPagination().SqlText, dbOperation.Input)
                 .ConfigureAwait(false);
             var totalCount = await dbOperation.LazyDbConnection
-                .ExecuteScalarAsync<long>(selectCount.SqlText, dbOperation)
+                .ExecuteScalarAsync<long>(selectCount.SqlText, dbOperation.Input)
                 .ConfigureAwait(false);
             return new QueryPage<TOutput>(items, dbOperation.Input.Page, dbOperation.Input.Take, totalCount);
         }
@@ -57,10 +55,10 @@ namespace Meteor.Operation.Db
             ISqlFactory sqlFactory, string tableName) where TInput : IQueryPageInput
         {
             var items = await dbOperation.LazyDbConnection
-                .QueryAsync<TOutput>(sqlFactory.Create().SelectPage(tableName).SqlText, dbOperation)
+                .QueryAsync<TOutput>(sqlFactory.Create().SelectPage(tableName).SqlText, dbOperation.Input)
                 .ConfigureAwait(false);
             var totalCount = await dbOperation.LazyDbConnection
-                .ExecuteScalarAsync<long>(sqlFactory.Create().SelectCount(tableName).SqlText, dbOperation)
+                .ExecuteScalarAsync<long>(sqlFactory.Create().SelectCount(tableName).SqlText, dbOperation.Input)
                 .ConfigureAwait(false);
             return new QueryPage<TOutput>(items, dbOperation.Input.Page, dbOperation.Input.Take, totalCount);
         }

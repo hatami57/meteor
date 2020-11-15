@@ -1,13 +1,10 @@
-﻿using Meteor.Database;
+﻿using System.Threading.Tasks;
+using Meteor.Database;
 using Meteor.Database.SqlDialect;
 using Meteor.Operation.Db;
-using Meteor.Sample.Operations.Db.User.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Meteor.Sample.Operations.Db.Models.User.Dto;
 
-namespace Meteor.Sample.Operations.Db.User.Commands
+namespace Meteor.Sample.Operations.Db.Models.User.Commands
 {
     public class AddUser : DbOperationAsync<AddUserInDto, int>
     {

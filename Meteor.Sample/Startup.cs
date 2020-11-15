@@ -1,15 +1,16 @@
+using System.IO;
+using Meteor.Database;
+using Meteor.Database.SqlDialect;
+using Meteor.Database.SqlDialect.Sqlite;
+using Meteor.Database.Sqlite;
 using Meteor.Operation;
+using Meteor.Sample.Operations.Db;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Meteor.Sample
 {
@@ -26,7 +27,18 @@ namespace Meteor.Sample
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSingleton<OperationFactory>();
+            
+            Directory.CreateDirectory("data");
+            EnvVars.SetDefaultValue(EnvVarKeys.DbUri, "data source=data/main.db");
+            
+            services.AddSingleton<IDbConnectionFactory, SqliteDbConnectionFactory>();
+            services.AddSingleton<ISqlFactory, SqlFactory<SqliteDialect>>();
+            services.AddScoped<LazyDbConnection>();
+            services.AddScoped<OperationFactory>();
+
+            new CreateDatabase(new LazyDbConnection(new SqliteDbConnectionFactory()),
+                    new SqlFactory<SqliteDialect>())
+                .ExecuteAsync().Wait();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

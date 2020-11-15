@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Meteor.Sample.Operations.Db.User.Dto
+﻿namespace Meteor.Sample.Operations.Db.Models.User.Dto
 {
     public class AddUserInDto
     {

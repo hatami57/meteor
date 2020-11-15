@@ -26,28 +26,28 @@ namespace Meteor.Database.SqlDialect
             _lastChar = char.MinValue;
         }
 
-        public ISqlDialect Select(string tableName, string columnNames = "*") =>
+        public virtual ISqlDialect Select(string tableName, string columnNames = "*") =>
             AppendSql($"SELECT {columnNames} FROM {tableName}");
 
-        public ISqlDialect InnerJoin(string tableName, string onClause) =>
+        public virtual ISqlDialect InnerJoin(string tableName, string onClause) =>
             Join(tableName, onClause);
 
-        public ISqlDialect LeftJoin(string tableName, string onClause) =>
+        public virtual ISqlDialect LeftJoin(string tableName, string onClause) =>
             Join(tableName, onClause, "LEFT");
 
-        public ISqlDialect RightJoin(string tableName, string onClause) =>
+        public virtual ISqlDialect RightJoin(string tableName, string onClause) =>
             Join(tableName, onClause, "RIGHT");
 
-        public ISqlDialect FullJoin(string tableName, string onClause) =>
+        public virtual ISqlDialect FullJoin(string tableName, string onClause) =>
             Join(tableName, onClause, "FULL");
 
         private ISqlDialect Join(string tableName, string onClause, string type = "INNER") =>
             AppendSql($" {type} JOIN {tableName} ON {onClause}");
 
-        public ISqlDialect Where(string where) =>
+        public virtual ISqlDialect Where(string where) =>
             AppendSql("WHERE " + where);
 
-        public ISqlDialect Where(Action<SqlWhereBuilder> whereBuilder)
+        public virtual ISqlDialect Where(Action<SqlWhereBuilder> whereBuilder)
         {
             if (whereBuilder == null) throw new ArgumentNullException(nameof(whereBuilder));
             
@@ -57,38 +57,38 @@ namespace Meteor.Database.SqlDialect
             return AppendSql("WHERE " + builder.SqlText);
         }
 
-        public ISqlDialect GroupBy(string columnNames) =>
+        public virtual ISqlDialect GroupBy(string columnNames) =>
             AppendSql("GROUP BY " + columnNames);
 
-        public ISqlDialect Having(string having) =>
+        public virtual ISqlDialect Having(string having) =>
             AppendSql("HAVING " + having);
 
-        public ISqlDialect OrderBy(string columnNames) =>
+        public virtual ISqlDialect OrderBy(string columnNames) =>
             AppendSql("ORDER BY " + columnNames);
 
-        public ISqlDialect Offset(string? offset, string? fetchFirst)
+        public virtual ISqlDialect Offset(string? offset, string? fetchFirst)
         {
             offset = string.IsNullOrWhiteSpace(offset) ? "" : $"OFFSET {offset}";
             fetchFirst = string.IsNullOrWhiteSpace(fetchFirst) ? "" : $"FETCH FIRST {fetchFirst} ROWS ONLY";
             return AppendSql($"{offset} {fetchFirst}".Trim());
         }
 
-        public ISqlDialect Insert(string tableName, string? columnNames, string values) =>
+        public virtual ISqlDialect Insert(string tableName, string? columnNames, string values) =>
             InsertCustomValues(tableName, columnNames, $"VALUES ({values})");
 
-        public ISqlDialect InsertCustomValues(string tableName, string? columnNames, string customValues)
+        public virtual ISqlDialect InsertCustomValues(string tableName, string? columnNames, string customValues)
         {
             columnNames = string.IsNullOrWhiteSpace(columnNames) ? "" : $" ({columnNames})";
             return AppendSql($"INSERT INTO {tableName}{columnNames} {customValues}");
         }
 
-        public ISqlDialect InsertReturnId(string tableName, string columnNames, string values, string idColumnName = "id") =>
+        public virtual ISqlDialect InsertReturnId(string tableName, string columnNames, string values, string idColumnName = "id") =>
             throw Errors.InvalidOperation("not_implemented");
 
-        public ISqlDialect Update(string tableName, string setColumns) =>
+        public virtual ISqlDialect Update(string tableName, string setColumns) =>
             AppendSql($"UPDATE {tableName} SET {setColumns}");
 
-        public ISqlDialect Update(string tableName, Action<SqlUpdateBuilder> updateBuilder)
+        public virtual ISqlDialect Update(string tableName, Action<SqlUpdateBuilder> updateBuilder)
         {
             if (updateBuilder == null) throw new ArgumentNullException(nameof(updateBuilder));
             
@@ -97,12 +97,12 @@ namespace Meteor.Database.SqlDialect
             return AppendSql($"UPDATE {tableName} SET {builder.SqlText}");
         }
 
-        public ISqlDialect Delete(string tableName) =>
+        public virtual ISqlDialect Delete(string tableName) =>
             AppendSql($"DELETE FROM {tableName}");
 
-        public ISqlDialect EndStatement()
+        public virtual ISqlDialect EndStatement()
         {
-            _sb.Append(";");
+            _sb.Append(';');
             return this;
         }
 

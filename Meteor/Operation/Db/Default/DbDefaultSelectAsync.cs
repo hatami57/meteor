@@ -4,7 +4,7 @@ using Meteor.Database.SqlDialect;
 
 namespace Meteor.Operation.Db.Default
 {
-    public class DbDefaultSelectAsync<TId, TOutput> : DbOperationAsync<DefaultId<TId>, TOutput>
+    public class DbDefaultSelectAsync<TId, TOutput> : DbOperationAsync<DbModel<TId>, TOutput> where TOutput : IDbModel<TId>
     {
         protected string TableName { get; set; }
 

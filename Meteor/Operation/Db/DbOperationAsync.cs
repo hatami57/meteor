@@ -29,7 +29,7 @@ namespace Meteor.Operation.Db
 		/// <param name="isolationLevel"></param>
 		/// <typeparam name="TOut"></typeparam>
 		/// <returns></returns>
-		public Task<TOut> EnsureInTransactionAsync<TOut>(Func<LazyDbConnection, IDbTransaction, Task<TOut>> func,
+		protected Task<TOut> EnsureInTransactionAsync<TOut>(Func<LazyDbConnection, IDbTransaction, Task<TOut>> func,
 			IsolationLevel isolationLevel)
 		{
 			if (func == null)
