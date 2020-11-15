@@ -3,8 +3,8 @@ namespace Meteor.Operation
     public enum OperationState
     {
         Created,
-        PreparedProperties,
-        ValidatedProperties,
+        ValidatedInput,
+        PreparedInput,
         PreparedExecution,
         ValidatedBeforeExecution,
         Executed,

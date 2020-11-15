@@ -1,6 +1,11 @@
 ﻿namespace Meteor.Operation
 {
-	public class NoType
-	{
-	}
+    public sealed class NoType
+    {
+        private NoType()
+        {
+        }
+
+        public static NoType? Empty => null;
+    }
 }

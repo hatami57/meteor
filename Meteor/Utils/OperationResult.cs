@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Meteor.Operation;
 using Serilog;
 
 namespace Meteor.Utils
@@ -20,16 +21,31 @@ namespace Meteor.Utils
         }
 
         public async Task<OperationResult> Then(Func<OperationResult, Task> func) =>
-            (Error == null) ? await Try(() => func(this)).ConfigureAwait(false) : this;
+            (Error == null) ? await Try(func, this).ConfigureAwait(false) : this;
 
         public async Task<OperationResult> Catch(Func<OperationResult, Task> func) =>
-            (Error != null) ? await Try(() => func(this)).ConfigureAwait(false) : this;
+            (Error != null) ? await Try(func, this).ConfigureAwait(false) : this;
 
         public static async Task<OperationResult> Try(Func<Task> func)
         {
             try
             {
                 await func().ConfigureAwait(false);
+                return new OperationResult(true);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "OperationResult");
+                return new OperationResult(false,
+                    e as Error ?? Errors.InternalError(null, e));
+            }
+        }
+        
+        public static async Task<OperationResult> Try<T>(Func<T, Task> func, T param)
+        {
+            try
+            {
+                await func(param).ConfigureAwait(false);
                 return new OperationResult(true);
             }
             catch (Exception e)

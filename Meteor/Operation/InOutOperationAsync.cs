@@ -7,7 +7,7 @@ namespace Meteor.Operation
     {
 		public TIn Input { get; set; }
         public TOut Output { get; protected set; }
-
+        
         public new async Task<TOut> ExecuteAsync()
         {
             await base.ExecuteAsync().ConfigureAwait(false);
