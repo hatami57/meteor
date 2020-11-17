@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using Meteor.AspCore.Filters;
 using Meteor.Operation;
 using Meteor.Operation.Db;
 using Meteor.Operation.Db.Default;
@@ -14,6 +15,7 @@ namespace Meteor.Sample.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [OperationResult]
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;

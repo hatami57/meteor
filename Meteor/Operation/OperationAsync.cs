@@ -5,11 +5,12 @@ using Serilog;
 
 namespace Meteor.Operation
 {
-    public abstract class OperationAsync<TInput, TOutput>
+    public abstract class OperationAsync<TInput, TOutput> : IOperationAsync<TInput, TOutput>
     {
-        public OperationState State { get; private set; } = OperationState.Created;
-        public TInput Input { get; set; }
+        public TInput Input { get; private set; }
         public TOutput Output { get; protected set; }
+        public OperationState State { get; private set; } = OperationState.Created;
+        public virtual bool LogInput => DefaultOperationSettings.LogInput;
 
         protected virtual Task ValidateInputAsync() =>
             Task.CompletedTask;
@@ -41,15 +42,35 @@ namespace Meteor.Operation
         protected virtual Task FinalizeAsync() =>
             Task.CompletedTask;
 
-        public OperationAsync<TInput, TOutput> SetInput(TInput input)
+        public IOperationAsync<TInput, TOutput> SetInput(TInput input)
         {
             Input = input;
             return this;
         }
 
+        public IOperationAsync SetInput(object input)
+        {
+            if (input is TInput x)
+                return SetInput(x);
+            
+            throw Errors.InvalidInput("invalid_input_type");
+        }
+
+        object? IOperationAsync.GetInput() => GetInput();
+
+        object? IOperationAsync.GetOutput() => GetOutput();
+
+        Task IOperationAsync.ExecuteAsync() => ExecuteAsync();
+
+        async Task<OperationResult> IOperationAsync.TryExecuteAsync() =>
+            await TryExecuteAsync().ConfigureAwait(false);
+
+        public TInput GetInput() => Input;
+        public TOutput GetOutput() => Output;
+
         public virtual async Task<TOutput> ExecuteAsync()
         {
-            var operationName = this.GetType().FullName;
+            var operationName = GetType().FullName;
 
             try
             {
@@ -101,6 +122,6 @@ namespace Meteor.Operation
         }
 
         public Task<OperationResult<TOutput>> TryExecuteAsync() =>
-            OperationResult<TOutput>.Try(ExecuteAsync);
+            OperationResultFactory.Try(ExecuteAsync);
     }
 }

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\meteor-aspcore\Meteor.AspCore\Meteor.AspCore.csproj" />
     <ProjectReference Include="..\Meteor\Meteor.csproj" />
   </ItemGroup>
 

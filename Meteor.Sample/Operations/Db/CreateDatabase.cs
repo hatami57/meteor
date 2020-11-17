@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Meteor.Database;
 using Meteor.Database.SqlDialect;
 using Meteor.Operation.Db;
+using Serilog;
 
 namespace Meteor.Sample.Operations.Db
 {
@@ -22,6 +23,12 @@ CREATE TABLE IF NOT EXISTS user (
 );
 ";
             return NewSql(sqlText).ExecuteAsync();
+        }
+
+        protected override Task OnSuccessAsync()
+        {
+            Log.Information("Database created");
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,13 +1,19 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using Meteor.AspCore;
 using Meteor.Database;
 using Meteor.Database.SqlDialect;
 using Meteor.Database.SqlDialect.Sqlite;
 using Meteor.Database.Sqlite;
 using Meteor.Operation;
+using Meteor.Operation.Db;
 using Meteor.Sample.Operations.Db;
+using Meteor.Sample.Operations.Db.Models.User.Commands;
+using Meteor.Sample.Operations.Db.Models.User.Dto;
+using Meteor.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,11 +36,9 @@ namespace Meteor.Sample
             
             Directory.CreateDirectory("data");
             EnvVars.SetDefaultValue(EnvVarKeys.DbUri, "data source=data/main.db");
-            
-            services.AddSingleton<IDbConnectionFactory, SqliteDbConnectionFactory>();
-            services.AddSingleton<ISqlFactory, SqlFactory<SqliteDialect>>();
-            services.AddScoped<LazyDbConnection>();
-            services.AddScoped<OperationFactory>();
+
+            services.AddOperationFactory();
+            services.AddDbOperation<SqliteDbConnectionFactory, SqliteDialect>();
 
             new CreateDatabase(new LazyDbConnection(new SqliteDbConnectionFactory()),
                     new SqlFactory<SqliteDialect>())
