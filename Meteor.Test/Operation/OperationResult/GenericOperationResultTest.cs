@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 using Meteor.Operation;
+using Meteor.Utils;
 using Xunit;
 
-namespace Meteor.Test.Operation
+namespace Meteor.Test.Operation.OperationResult
 {
     public class GenericOperationResultTest
     {
@@ -27,6 +28,21 @@ namespace Meteor.Test.Operation
             Assert.Null(op.Error);
             Assert.Equal(result, op.Result);
         }
+        
+        [Fact]
+        public async Task CreateErrorResultByTask()
+        {
+            var op = await OperationResultFactory.Try(() =>
+            {
+                const int x = 10;
+                if (x < 20) throw Errors.InternalError("intentional_error");
+                return Task.FromResult(x);
+            });
+
+            Assert.False(op.Success);
+            Assert.NotNull(op.Error);
+            Assert.Equal(default, op.Result);
+        }
 
         [Fact]
         public async Task CreateSuccessfulResultByOperationResultTask()
@@ -40,6 +56,23 @@ namespace Meteor.Test.Operation
             Assert.True(op.Success);
             Assert.Null(op.Error);
             Assert.Equal(result, op.Result);
+        }
+
+        [Fact]
+        public async Task CreateErrorResultByOperationResultTask()
+        {
+            var op = await OperationResultFactory.Try(() =>
+                OperationResultFactory.Try(() => 
+                    OperationResultFactory.Try(() =>
+                    {
+                        const int x = 10;
+                        if (x < 20) throw Errors.InternalError("intentional_error");
+                        return Task.FromResult(x);
+                    })));
+
+            Assert.False(op.Success);
+            Assert.NotNull(op.Error);
+            Assert.Equal(default, op.Result);
         }
     }
 }

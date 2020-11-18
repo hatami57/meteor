@@ -8,6 +8,8 @@ namespace Meteor.Test.Operation
 {
     public class SuccessOperationTest : OperationAsync
     {
+        private bool LoggerIsCalled { get; set; }
+        
         protected override Task ValidateInputAsync()
         {
             Assert.Equal(OperationState.Created, State);
@@ -69,11 +71,24 @@ namespace Meteor.Test.Operation
             // here should not be called
             throw Errors.InvalidOperation();
         }
+        
+        protected override Task LoggerAsync()
+        {
+            LoggerIsCalled = true;
+            
+            throw Errors.InternalError("");
+            
+            return base.LoggerAsync();
+        }
 
         [Fact]
-        public Task Test()
+        public async Task Test()
         {
-            return new SuccessOperationTest().ExecuteAsync();
+            var op = new SuccessOperationTest();
+            await op.ExecuteAsync();
+            
+            Assert.Equal(OperationState.Succeed, op.State);
+            Assert.True(op.LoggerIsCalled);
         }
     }
 }

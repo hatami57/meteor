@@ -52,6 +52,8 @@ namespace Meteor.Sample
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            DefaultOperationSettings.LoggerAsync = OperationLogger.LogOperation;
 
             app.UseRouting();
 

@@ -20,25 +20,28 @@ namespace Meteor.Operation
 
         protected virtual Task PrepareExecutionAsync() =>
             Task.CompletedTask;
-        
+
         protected virtual Task ValidateBeforeExecutionAsync() =>
             Task.CompletedTask;
-        
+
         protected abstract Task ExecutionAsync();
-        
+
         protected virtual Task ValidateAfterExecutionAsync() =>
             Task.CompletedTask;
-        
+
         /// <summary>
         /// This method is called when the operation is executed successfully
         /// </summary>
         /// <returns></returns>
         protected virtual Task OnSuccessAsync() =>
             Task.CompletedTask;
-        
+
         protected virtual Task OnErrorAsync(Exception e) =>
             Task.CompletedTask;
-        
+
+        protected virtual Task LoggerAsync() =>
+            DefaultOperationSettings.LoggerAsync?.Invoke(this) ?? Task.CompletedTask;
+
         protected virtual Task FinalizeAsync() =>
             Task.CompletedTask;
 
@@ -52,7 +55,7 @@ namespace Meteor.Operation
         {
             if (input is TInput x)
                 return SetInput(x);
-            
+
             throw Errors.InvalidInput("invalid_input_type");
         }
 
@@ -75,7 +78,7 @@ namespace Meteor.Operation
             try
             {
                 Log.Debug("start executing {OperationName} operation, with {@Input}", operationName, Input);
-                
+
                 Log.Verbose("calling {MethodName}", nameof(ValidateInputAsync));
                 await ValidateInputAsync().ConfigureAwait(false);
                 State = OperationState.ValidatedInput;
@@ -116,7 +119,8 @@ namespace Meteor.Operation
             {
                 Log.Verbose("calling {MethodName}", nameof(FinalizeAsync));
                 await FinalizeAsync().ConfigureAwait(false);
-
+                
+                await Errors.IgnoreAsync(LoggerAsync).ConfigureAwait(false);
                 Log.Debug("finish executing {OperationName} operation", operationName);
             }
         }

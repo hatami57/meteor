@@ -1,11 +1,10 @@
-using System.Dynamic;
 using System.Threading.Tasks;
-using Meteor.Utils;
 
 namespace Meteor.Operation
 {
     public interface IOperationAsync
     {
+        OperationState State { get; }
         IOperationAsync SetInput(object input);
         object? GetInput();
         object? GetOutput();
@@ -16,8 +15,6 @@ namespace Meteor.Operation
     
     public interface IOperationAsync<TInput, TOutput> : IOperationAsync
     {
-        OperationState State { get; }
-
         IOperationAsync<TInput, TOutput> SetInput(TInput input);
         new TInput GetInput();
         new TOutput GetOutput();

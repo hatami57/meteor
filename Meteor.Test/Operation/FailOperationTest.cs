@@ -8,6 +8,8 @@ namespace Meteor.Test.Operation
 {
     public class FailOperationTest : OperationAsync
     {
+        private bool LoggerIsCalled { get; set; }
+
         protected override Task ValidateInputAsync()
         {
             Assert.Equal(OperationState.Created, State);
@@ -61,10 +63,21 @@ namespace Meteor.Test.Operation
             return Task.CompletedTask;
         }
 
-        [Fact]
-        public Task Test()
+        protected override Task LoggerAsync()
         {
-            return Assert.ThrowsAsync<Error>(new FailOperationTest().ExecuteAsync);
+            LoggerIsCalled = true;
+            Assert.Equal(OperationState.Failed, State);
+            
+            return base.LoggerAsync();
+        }
+
+        [Fact]
+        public async Task Test()
+        {
+            var op = new FailOperationTest();
+            
+            await Assert.ThrowsAsync<Error>(op.ExecuteAsync);
+            Assert.True(op.LoggerIsCalled);
         }
     }
 }
