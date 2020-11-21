@@ -63,7 +63,7 @@ namespace Meteor.Operation
 
         object? IOperationAsync.GetOutput() => GetOutput();
 
-        Task IOperationAsync.ExecuteAsync() => ExecuteAsync();
+        async Task<object?> IOperationAsync.ExecuteAsync() => await ExecuteAsync().ConfigureAwait(false);
 
         async Task<OperationResult> IOperationAsync.TryExecuteAsync() =>
             await TryExecuteAsync().ConfigureAwait(false);

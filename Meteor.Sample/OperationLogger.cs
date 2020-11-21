@@ -2,6 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Meteor.Database;
 using Meteor.Operation;
+using Meteor.Sample.Operations;
+using Meteor.Sample.Operations.Logging;
 using Serilog;
 
 namespace Meteor.Sample
@@ -20,7 +22,9 @@ namespace Meteor.Sample
             Log.Information("Operation '{Name}({State})', Input: {@Input}, Output: {@Output}",
                 operation.GetType().Name, operation.State, operation.GetInput(), operation.GetOutput());
 
-            return Task.CompletedTask;
+            return operation is ILog
+                ? new AddLog().SetInput(operation).ExecuteAsync()
+                : Task.CompletedTask;
         }
     }
 }

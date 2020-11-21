@@ -9,7 +9,7 @@ namespace Meteor.Operation
         object? GetInput();
         object? GetOutput();
         
-        Task ExecuteAsync();
+        Task<object?> ExecuteAsync();
         Task<OperationResult> TryExecuteAsync();
     }
     

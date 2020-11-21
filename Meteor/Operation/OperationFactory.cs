@@ -19,16 +19,22 @@ namespace Meteor.Operation
             return ActivatorUtilities.CreateInstance<T>(_serviceProvider, parameters);
         }
 
-        public Task<TOutput> ExecuteAsync<TOperation, TInput, TOutput>(TInput input) where TOperation : OperationAsync<TInput, TOutput> =>
+        public Task<object?> ExecuteAsync<TOperation>(object input) where TOperation : IOperationAsync =>
+            Create<TOperation>().SetInput(input).ExecuteAsync();
+
+        public Task<TOutput> ExecuteAsync<TOperation, TInput, TOutput>(TInput input)
+            where TOperation : OperationAsync<TInput, TOutput> =>
             Create<TOperation>().SetInput(input).ExecuteAsync();
 
         public Task<TOutput> ExecuteAsync<TOperation, TOutput>() where TOperation : OperationAsync<NoType, TOutput> =>
             Create<TOperation>().ExecuteAsync();
-        
-        public Task<OperationResult<TOutput>> TryExecuteAsync<TOperation, TInput, TOutput>(TInput input) where TOperation : OperationAsync<TInput, TOutput> =>
+
+        public Task<OperationResult<TOutput>> TryExecuteAsync<TOperation, TInput, TOutput>(TInput input)
+            where TOperation : OperationAsync<TInput, TOutput> =>
             Create<TOperation>().SetInput(input).TryExecuteAsync();
 
-        public Task<OperationResult<TOutput>> TryExecuteAsync<TOperation, TOutput>() where TOperation : OperationAsync<NoType, TOutput> =>
+        public Task<OperationResult<TOutput>> TryExecuteAsync<TOperation, TOutput>()
+            where TOperation : OperationAsync<NoType, TOutput> =>
             Create<TOperation>().TryExecuteAsync();
     }
 }
