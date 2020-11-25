@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Meteor.Logger;
 
 namespace Meteor.Operation
 {
@@ -11,6 +12,8 @@ namespace Meteor.Operation
         
         Task<object?> ExecuteAsync();
         Task<OperationResult> TryExecuteAsync();
+        
+        IOperationLoggerAsync? LoggerAsync { get; set; }
     }
     
     public interface IOperationAsync<TInput, TOutput> : IOperationAsync

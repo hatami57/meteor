@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Meteor.Logger;
 using Meteor.Utils;
 using Serilog;
 
@@ -10,6 +11,7 @@ namespace Meteor.Operation
         public TInput Input { get; private set; }
         public TOutput Output { get; protected set; }
         public OperationState State { get; private set; } = OperationState.Created;
+        public IOperationLoggerAsync? LoggerAsync { get; set; }
         public virtual bool LogInput => DefaultOperationSettings.LogInput;
 
         protected virtual Task ValidateInputAsync() =>
@@ -39,8 +41,10 @@ namespace Meteor.Operation
         protected virtual Task OnErrorAsync(Exception e) =>
             Task.CompletedTask;
 
-        protected virtual Task LoggerAsync() =>
-            DefaultOperationSettings.LoggerAsync?.Invoke(this) ?? Task.CompletedTask;
+        protected virtual Task LogAsync() =>
+            LoggerAsync?.LogAsync(this)
+            ?? DefaultOperationSettings.LoggerAsync?.Invoke(this)
+            ?? Task.CompletedTask;
 
         protected virtual Task FinalizeAsync() =>
             Task.CompletedTask;
@@ -120,7 +124,7 @@ namespace Meteor.Operation
                 Log.Verbose("calling {MethodName}", nameof(FinalizeAsync));
                 await FinalizeAsync().ConfigureAwait(false);
                 
-                await Errors.IgnoreAsync(LoggerAsync).ConfigureAwait(false);
+                await Errors.IgnoreAsync(LogAsync).ConfigureAwait(false);
                 Log.Debug("finish executing {OperationName} operation", operationName);
             }
         }

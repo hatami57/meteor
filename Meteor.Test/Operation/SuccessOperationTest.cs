@@ -72,13 +72,13 @@ namespace Meteor.Test.Operation
             throw Errors.InvalidOperation();
         }
         
-        protected override Task LoggerAsync()
+        protected override Task LogAsync()
         {
             LoggerIsCalled = true;
             
             throw Errors.InternalError("");
             
-            return base.LoggerAsync();
+            return base.LogAsync();
         }
 
         [Fact]

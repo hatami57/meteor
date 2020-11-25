@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Meteor.Utils;
+using Meteor.Logger;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Meteor.Operation
@@ -14,10 +14,15 @@ namespace Meteor.Operation
             _serviceProvider = serviceProvider;
         }
 
-        public T Create<T>(params object[] parameters)
+        public T Create<T>(params object[] parameters) where T : IOperationAsync
         {
-            return ActivatorUtilities.CreateInstance<T>(_serviceProvider, parameters);
+            var op = ActivatorUtilities.CreateInstance<T>(_serviceProvider, parameters);
+            op.LoggerAsync = _serviceProvider.GetService<IOperationLoggerAsync>();
+            return op;
         }
+        
+        public Task<object?> ExecuteAsync<TOperation>() where TOperation : IOperationAsync =>
+            Create<TOperation>().ExecuteAsync();
 
         public Task<object?> ExecuteAsync<TOperation>(object input) where TOperation : IOperationAsync =>
             Create<TOperation>().SetInput(input).ExecuteAsync();

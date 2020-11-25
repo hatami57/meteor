@@ -63,12 +63,12 @@ namespace Meteor.Test.Operation
             return Task.CompletedTask;
         }
 
-        protected override Task LoggerAsync()
+        protected override Task LogAsync()
         {
             LoggerIsCalled = true;
             Assert.Equal(OperationState.Failed, State);
             
-            return base.LoggerAsync();
+            return base.LogAsync();
         }
 
         [Fact]

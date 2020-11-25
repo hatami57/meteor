@@ -9,7 +9,6 @@ using Meteor.Sample.Operations.Db.Models.User;
 using Meteor.Sample.Operations.Db.Models.User.Commands;
 using Meteor.Sample.Operations.Db.Models.User.Dto;
 using Meteor.Sample.Operations.Db.Models.User.Queries;
-using Meteor.Utils;
 
 namespace Meteor.Sample.Controllers
 {
