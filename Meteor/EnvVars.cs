@@ -7,7 +7,7 @@ namespace Meteor
     public static partial class EnvVars
     {
         private static readonly IDictionary KeyValues = new Dictionary<object, object>();
-        public static string DbUri { get; private set; } 
+        public static string DbUri { get; private set; }
 
         static EnvVars()
         {

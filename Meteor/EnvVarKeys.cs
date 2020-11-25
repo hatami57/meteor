@@ -1,4 +1,4 @@
-﻿﻿ namespace Meteor
+﻿namespace Meteor
 {
     public static class EnvVarKeys
     {

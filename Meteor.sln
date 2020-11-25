@@ -1,6 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meteor", "Meteor\Meteor.csproj", "{4CFDA5A1-34DF-4E80-8A79-3ED2699C9046}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meteor", "Meteor\Meteor.csproj", "{4CFDA5A1-34DF-4E80-8A79-3ED2699C9046}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meteor.Test", "Meteor.Test\Meteor.Test.csproj", "{4738CE6D-2104-4BD2-ABC6-B6DF7A12E511}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meteor.Sample", "Meteor.Sample\Meteor.Sample.csproj", "{38B97F6C-1128-443C-AB6E-594ADCAE1057}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meteor.AspCore", "..\meteor-aspcore\Meteor.AspCore\Meteor.AspCore.csproj", "{ED6DDCA1-85AD-40C6-BD6B-756A27AB1A9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +21,23 @@ Global
 		{4CFDA5A1-34DF-4E80-8A79-3ED2699C9046}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CFDA5A1-34DF-4E80-8A79-3ED2699C9046}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CFDA5A1-34DF-4E80-8A79-3ED2699C9046}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4738CE6D-2104-4BD2-ABC6-B6DF7A12E511}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4738CE6D-2104-4BD2-ABC6-B6DF7A12E511}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4738CE6D-2104-4BD2-ABC6-B6DF7A12E511}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4738CE6D-2104-4BD2-ABC6-B6DF7A12E511}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38B97F6C-1128-443C-AB6E-594ADCAE1057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38B97F6C-1128-443C-AB6E-594ADCAE1057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38B97F6C-1128-443C-AB6E-594ADCAE1057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38B97F6C-1128-443C-AB6E-594ADCAE1057}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED6DDCA1-85AD-40C6-BD6B-756A27AB1A9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED6DDCA1-85AD-40C6-BD6B-756A27AB1A9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED6DDCA1-85AD-40C6-BD6B-756A27AB1A9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED6DDCA1-85AD-40C6-BD6B-756A27AB1A9A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C0927C7B-5991-46AB-93CA-18E85C062757}
 	EndGlobalSection
 EndGlobal
