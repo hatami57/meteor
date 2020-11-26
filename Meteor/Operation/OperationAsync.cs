@@ -6,6 +6,18 @@ using Serilog;
 
 namespace Meteor.Operation
 {
+    public abstract class OperationAsync : OperationAsync<NoType, NoType>
+    {
+    }
+
+    public abstract class InOperationAsync<TInput> : OperationAsync<TInput, NoType>
+    {
+    }
+
+    public abstract class OutOperationAsync<TOutput> : OperationAsync<NoType, TOutput>
+    {
+    }
+
     public abstract class OperationAsync<TInput, TOutput> : IOperationAsync<TInput, TOutput>
     {
         public TInput Input { get; private set; }
@@ -13,7 +25,9 @@ namespace Meteor.Operation
         public OperationState State { get; private set; } = OperationState.Created;
         public IOperationLoggerAsync? LoggerAsync { get; set; }
         public virtual bool LogInput => DefaultOperationSettings.LogInput;
-
+        
+        protected OperationFactory? OperationFactory { get; set; }
+        
         protected virtual Task ValidateInputAsync() =>
             Task.CompletedTask;
 
@@ -48,6 +62,24 @@ namespace Meteor.Operation
 
         protected virtual Task FinalizeAsync() =>
             Task.CompletedTask;
+
+        public virtual IOperationAsync SetOperationFactory(OperationFactory operationFactory)
+        {
+            OperationFactory = operationFactory;
+            return this;
+        }
+
+        public T NewOperation<T>(object? input = null) where T : IOperationAsync
+        {
+            if (OperationFactory == null)
+                throw Errors.InvalidOperation("OperationFactory==null");
+
+            var op = OperationFactory.Create<T>();
+            if (input != null)
+                op.SetInput(input);
+            
+            return op;
+        }
 
         public IOperationAsync<TInput, TOutput> SetInput(TInput input)
         {
@@ -123,7 +155,7 @@ namespace Meteor.Operation
             {
                 Log.Verbose("calling {MethodName}", nameof(FinalizeAsync));
                 await FinalizeAsync().ConfigureAwait(false);
-                
+
                 await Errors.IgnoreAsync(LogAsync).ConfigureAwait(false);
                 Log.Debug("finish executing {OperationName} operation", operationName);
             }

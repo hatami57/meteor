@@ -5,13 +5,9 @@ using Meteor.Utils;
 
 namespace Meteor.Operation.Db
 {
-    public abstract class DbQueryPageAsync<TInput, TOutput> : DbOperationAsync<TInput, QueryPage<TOutput>> where TInput : IQueryPageInput
+    public abstract class DbQueryPageAsync<TInput, TOutput> : DbOperationAsync<TInput, QueryPage<TOutput>>
+        where TInput : IQueryPageInput
     {
-        protected DbQueryPageAsync(LazyDbConnection lazyDbConnection, ISqlFactory sqlFactory)
-            : base(lazyDbConnection, sqlFactory)
-        {
-        }
-
         protected override Task<TInput> PrepareInputAsync()
         {
             if (Input.Page <= 0)

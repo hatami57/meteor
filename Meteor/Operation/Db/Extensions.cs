@@ -7,6 +7,7 @@ namespace Meteor.Operation.Db
 {
     public static class Extensions
     {
+        
         public static ISqlDialect AddPagination(this ISqlDialect sqlDialect) =>
             sqlDialect.Offset("@Offset", "@Take");
 

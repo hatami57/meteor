@@ -13,6 +13,8 @@ namespace Meteor.Operation
         Task<object?> ExecuteAsync();
         Task<OperationResult> TryExecuteAsync();
         
+        IOperationAsync SetOperationFactory(OperationFactory operationFactory);
+        T NewOperation<T>(object? input = null) where T : IOperationAsync;
         IOperationLoggerAsync? LoggerAsync { get; set; }
     }
     

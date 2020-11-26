@@ -11,9 +11,7 @@ namespace Meteor.Operation.Db.Default
         protected string ColumnNames { get; set; }
         protected string ColumnValues { get; set; }
 
-        public DbDefaultInsertAsync(LazyDbConnection lazyDbConnection, ISqlFactory sqlFactory, string tableName,
-            string columnNames, string columnValues)
-            : base(lazyDbConnection, sqlFactory)
+        public DbDefaultInsertAsync(string tableName, string columnNames, string columnValues)
         {
             TableName = tableName;
             ColumnNames = columnNames;

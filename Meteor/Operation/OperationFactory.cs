@@ -14,13 +14,15 @@ namespace Meteor.Operation
             _serviceProvider = serviceProvider;
         }
 
+        public T? GetService<T>() => _serviceProvider.GetService<T>();
+
         public T Create<T>(params object[] parameters) where T : IOperationAsync
         {
             var op = ActivatorUtilities.CreateInstance<T>(_serviceProvider, parameters);
-            op.LoggerAsync = _serviceProvider.GetService<IOperationLoggerAsync>();
+            op.SetOperationFactory(this).LoggerAsync = _serviceProvider.GetService<IOperationLoggerAsync>();
             return op;
         }
-        
+
         public Task<object?> ExecuteAsync<TOperation>() where TOperation : IOperationAsync =>
             Create<TOperation>().ExecuteAsync();
 

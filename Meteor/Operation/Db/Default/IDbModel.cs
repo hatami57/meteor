@@ -2,6 +2,6 @@
 {
     public interface IDbModel<TId>
     {
-        public TId Id { get; set; }
+        public TId Id { get; }
     }
 }

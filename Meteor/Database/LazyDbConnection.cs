@@ -38,20 +38,20 @@ namespace Meteor.Database
         /// <param name="isolationLevel"></param>
         /// <typeparam name="TOut"></typeparam>
         /// <returns></returns>
-        public async Task<TOut> EnsureInTransactionAsync<TOut>(Func<LazyDbConnection, IDbTransaction, Task<TOut>> func,
+        public async Task<TOut> EnsureInTransactionAsync<TOut>(Func<Task<TOut>> func,
             IsolationLevel isolationLevel)
         {
             if (func == null)
                 throw Errors.InvalidInput("null_func");
 
             if (_sharedTransaction != null)
-                return await func(this, _sharedTransaction).ConfigureAwait(false);
+                return await func().ConfigureAwait(false);
 
             await using var tx = await BeginTransactionAsync(isolationLevel).ConfigureAwait(false);
             _sharedTransaction = tx;
             try
             {
-                var res = await func(this, tx).ConfigureAwait(false);
+                var res = await func().ConfigureAwait(false);
                 _sharedTransaction = null;
                 await tx.CommitAsync().ConfigureAwait(false);
                 return res;

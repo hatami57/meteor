@@ -8,11 +8,7 @@ namespace Meteor.Operation.Db.Default
     {
         protected string TableName { get; set; }
 
-        public DbDefaultSelectAsync(LazyDbConnection lazyDbConnection, ISqlFactory sqlFactory, string tableName)
-            : base(lazyDbConnection, sqlFactory)
-        {
-            TableName = tableName;
-        }
+        public DbDefaultSelectAsync(string tableName) => TableName = tableName;
 
         protected override async Task ExecutionAsync() =>
             Output = await NewSql(sql => sql.SelectThisId(TableName))

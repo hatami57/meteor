@@ -9,9 +9,7 @@ namespace Meteor.Operation.Db.Default
         protected string TableName { get; set; }
         protected string SetColumns { get; set; }
 
-        public DbDefaultUpdateAsync(LazyDbConnection lazyDbConnection, ISqlFactory sqlFactory, string tableName,
-            string setColumns)
-            : base(lazyDbConnection, sqlFactory)
+        public DbDefaultUpdateAsync(string tableName, string setColumns)
         {
             TableName = tableName;
             SetColumns = setColumns;
