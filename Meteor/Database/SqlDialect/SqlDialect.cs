@@ -9,6 +9,7 @@ namespace Meteor.Database.SqlDialect
         private readonly StringBuilder _sb;
         private char _lastChar;
         
+        public ISqlFactory SqlFactory { get; set; }
         public string SqlText
         {
             get => _sb.ToString();
@@ -26,6 +27,20 @@ namespace Meteor.Database.SqlDialect
             _lastChar = char.MinValue;
         }
 
+        public ISqlDialect With(string with) =>
+            AppendSql("WITH " + with);
+
+        public ISqlDialect With(Action<SqlWithBuilder> withBuilder)
+        {
+            if (withBuilder == null) throw Errors.InvalidInput(nameof(withBuilder));
+
+            var builder = new SqlWithBuilder {SqlFactory = SqlFactory};
+            
+            withBuilder(builder);
+            var sqlText = builder.SqlText;
+            return string.IsNullOrWhiteSpace(sqlText) ? this : AppendSql("WITH " + builder.SqlText);
+        }
+
         public virtual ISqlDialect Select(string tableName, string columnNames = "*") =>
             AppendSql($"SELECT {columnNames} FROM {tableName}");
 
@@ -41,20 +56,24 @@ namespace Meteor.Database.SqlDialect
         public virtual ISqlDialect FullJoin(string tableName, string onClause) =>
             Join(tableName, onClause, "FULL");
 
+        public ISqlDialect CrossJoin(string tableName) =>
+            AppendSql($"CROSS JOIN {tableName}");
+
         private ISqlDialect Join(string tableName, string onClause, string type = "INNER") =>
-            AppendSql($" {type} JOIN {tableName} ON {onClause}");
+            AppendSql($"{type} JOIN {tableName} ON {onClause}");
 
         public virtual ISqlDialect Where(string where) =>
             AppendSql("WHERE " + where);
 
         public virtual ISqlDialect Where(Action<SqlWhereBuilder> whereBuilder)
         {
-            if (whereBuilder == null) throw new ArgumentNullException(nameof(whereBuilder));
+            if (whereBuilder == null) throw Errors.InvalidInput(nameof(whereBuilder));
             
             var builder = new SqlWhereBuilder();
             
             whereBuilder(builder);
-            return AppendSql("WHERE " + builder.SqlText);
+            var sqlText = builder.SqlText;
+            return string.IsNullOrWhiteSpace(sqlText) ? this : AppendSql("WHERE " + builder.SqlText);
         }
 
         public virtual ISqlDialect GroupBy(string columnNames) =>
@@ -68,7 +87,7 @@ namespace Meteor.Database.SqlDialect
 
         public virtual ISqlDialect Offset(string? offset, string? fetchFirst)
         {
-            offset = string.IsNullOrWhiteSpace(offset) ? "" : $"OFFSET {offset}";
+            offset = string.IsNullOrWhiteSpace(offset) ? "" : $"OFFSET {offset} ROWS";
             fetchFirst = string.IsNullOrWhiteSpace(fetchFirst) ? "" : $"FETCH FIRST {fetchFirst} ROWS ONLY";
             return AppendSql($"{offset} {fetchFirst}".Trim());
         }

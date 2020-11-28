@@ -7,7 +7,7 @@ namespace Meteor.Database.PostgreSql
 {
     public class NpgsqlDbConnectionFactory : DbConnectionFactory
     {
-        public NpgsqlDbConnectionFactory(string connectionString = null)
+        public NpgsqlDbConnectionFactory(string? connectionString = null)
             : base(connectionString)
         {
             Dapper.SqlMapper.AddTypeHandler(new NpgsqlLocalDateTypeHandler());

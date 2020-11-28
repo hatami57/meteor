@@ -64,27 +64,27 @@ namespace Meteor.Database
             }
         }
         
-        public Task<SqlMapper.GridReader> QueryMultipleAsync(string sqlText, object? param) =>
+        public Task<SqlMapper.GridReader> QueryMultipleAsync(string sqlText, object? param = null) =>
             GetConnectionAsync().Then(db => db.QueryMultipleAsync(sqlText, param, _sharedTransaction));
 
-        public Task<IEnumerable<T>> QueryAsync<T>(string sqlText, object? param) =>
+        public Task<IEnumerable<T>> QueryAsync<T>(string sqlText, object? param = null) =>
             GetConnectionAsync().Then(db => db.QueryAsync<T>(sqlText, param, _sharedTransaction));
 
         public Task<IEnumerable<TReturn>> QueryAsync<TModel1, TModel2, TReturn>(string sqlText,
-            Func<TModel1, TModel2, TReturn> func, object? param, string splitOn = "Id") =>
+            Func<TModel1, TModel2, TReturn> func, object? param = null, string splitOn = "Id") =>
             GetConnectionAsync().Then(db => db.QueryAsync(sqlText, func, param, _sharedTransaction, splitOn: splitOn));
 
         public Task<IEnumerable<TReturn>> QueryAsync<TModel1, TModel2, TModel3, TReturn>(string sqlText,
-            Func<TModel1, TModel2, TModel3, TReturn> func, object? param, string splitOn = "Id") =>
+            Func<TModel1, TModel2, TModel3, TReturn> func, object? param = null, string splitOn = "Id") =>
             GetConnectionAsync().Then(db => db.QueryAsync(sqlText, func, param, _sharedTransaction, splitOn: splitOn));
 
-        public Task<T> QueryFirstOrDefaultAsync<T>(string sqlText, object? param) =>
+        public Task<T> QueryFirstOrDefaultAsync<T>(string sqlText, object? param = null) =>
             GetConnectionAsync().Then(db => db.QueryFirstOrDefaultAsync<T>(sqlText, param, _sharedTransaction));
 
-        public Task<int> ExecuteAsync(string sqlText, object? param) =>
+        public Task<int> ExecuteAsync(string sqlText, object? param = null) =>
             GetConnectionAsync().Then(db => db.ExecuteAsync(sqlText, param, _sharedTransaction));
 
-        public Task<T> ExecuteScalarAsync<T>(string sqlText, object? param) =>
+        public Task<T> ExecuteScalarAsync<T>(string sqlText, object? param = null) =>
             GetConnectionAsync().Then(db => db.ExecuteScalarAsync<T>(sqlText, param, _sharedTransaction));
 
         public void Dispose()

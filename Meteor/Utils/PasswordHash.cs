@@ -15,7 +15,9 @@ namespace Meteor.Utils
 
         public static string Hash(string plainPwd)
         {
-            if (plainPwd == null) return null;
+            if (plainPwd == null)
+                throw Errors.InvalidInput(nameof(plainPwd));
+            
             using var cryptoProvider = new RNGCryptoServiceProvider();
             var salt = new byte[SaltByteSize];
             cryptoProvider.GetBytes(salt);
@@ -28,6 +30,9 @@ namespace Meteor.Utils
 
         public static bool Validate(string plainPwd, string hash)
         {
+            if (plainPwd == null || hash == null)
+                throw Errors.InvalidInput(nameof(plainPwd));
+            
             char[] delimiter = { ':' };
             var split = hash.Split(delimiter);
             var iterations = int.Parse(split[IterationIndex]);

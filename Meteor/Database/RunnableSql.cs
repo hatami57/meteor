@@ -11,7 +11,7 @@ namespace Meteor.Database
         private readonly string _sqlText;
         private readonly object? _param;
 
-        public RunnableSql(LazyDbConnection lazyDbConnection, string sqlText, object? param)
+        public RunnableSql(LazyDbConnection lazyDbConnection, string sqlText, object? param = null)
         {
             _lazyDbConnection = lazyDbConnection;
             _sqlText = sqlText;

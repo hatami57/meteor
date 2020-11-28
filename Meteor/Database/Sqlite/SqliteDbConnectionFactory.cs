@@ -7,7 +7,7 @@ namespace Meteor.Database.Sqlite
 {
     public class SqliteDbConnectionFactory : DbConnectionFactory
     {
-        public SqliteDbConnectionFactory(string connectionString = null)
+        public SqliteDbConnectionFactory(string? connectionString = null)
             : base(connectionString)
         {
             Dapper.SqlMapper.AddTypeHandler(new LocalDateTypeHandler());
