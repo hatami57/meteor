@@ -8,5 +8,8 @@ namespace Meteor.Utils
     {
         public static async Task<List<T>> ToListAsync<T>(this Task<IEnumerable<T>> task) =>
             (await task.ConfigureAwait(false)).ToList();
+        
+        public static async Task<T[]> ToArrayAsync<T>(this Task<IEnumerable<T>> task) =>
+            (await task.ConfigureAwait(false)).ToArray();
     }
 }

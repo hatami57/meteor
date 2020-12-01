@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Meteor.Logger;
 using Meteor.Utils;
 using Serilog;
-using SQLitePCL;
 
 namespace Meteor.Operation
 {
@@ -33,8 +32,8 @@ namespace Meteor.Operation
 
         public TOutput? Output { get; protected set; }
         public OperationState State { get; private set; } = OperationState.Created;
+        public Exception? Error { get; private set; }
         public IOperationLoggerAsync? LoggerAsync { get; set; }
-        public virtual bool LogInput => DefaultOperationSettings.LogInput;
 
         protected OperationFactory? OperationFactory { get; set; }
 
@@ -155,6 +154,7 @@ namespace Meteor.Operation
             }
             catch (Exception e)
             {
+                Error = e;
                 State = OperationState.Failed;
                 await Errors.IgnoreAsync(OnErrorAsync, e).ConfigureAwait(false);
                 Log.Error(e, "operation execution failed");

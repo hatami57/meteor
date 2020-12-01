@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Meteor.Logger;
 
@@ -9,6 +10,7 @@ namespace Meteor.Operation
         IOperationAsync SetInput(object? input);
         object? Input { get; }
         object? Output { get; }
+        Exception? Error { get; }
         
         Task<object?> ExecuteAsync();
         Task<object?> ExecuteAsync(object? input);
