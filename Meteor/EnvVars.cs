@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Meteor.Utils;
 using Microsoft.Extensions.Configuration;
 
 namespace Meteor
@@ -25,6 +26,10 @@ namespace Meteor
 
             return (T)KeyValues[key];
         }
+
+        public static string Require(string key) => Require<string>(key);
+        public static T Require<T>(string key) =>
+            Get<T>(key) ?? throw Errors.NotFound($"required_environment_variable={key}");
 
         public static void Set(object key, object value)
         {
