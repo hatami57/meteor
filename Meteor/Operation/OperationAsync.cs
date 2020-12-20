@@ -20,14 +20,23 @@ namespace Meteor.Operation
 
     public abstract class OperationAsync<TInput, TOutput> : IOperationAsync<TInput, TOutput>
     {
-        public TInput Input { get; private set; }
-        public TOutput Output { get; protected set; }
+        object? IOperationAsync.Input => Input;
+        object? IOperationAsync.Output => Output;
+        private TInput? _input;
+
+        public TInput Input
+        {
+            get => (TInput) _input!;
+            private set => _input = value;
+        }
+
+        public TOutput? Output { get; protected set; }
         public OperationState State { get; private set; } = OperationState.Created;
+        public Exception? Error { get; private set; }
         public IOperationLoggerAsync? LoggerAsync { get; set; }
-        public virtual bool LogInput => DefaultOperationSettings.LogInput;
-        
+
         protected OperationFactory? OperationFactory { get; set; }
-        
+
         protected virtual Task ValidateInputAsync() =>
             Task.CompletedTask;
 
@@ -69,16 +78,23 @@ namespace Meteor.Operation
             return this;
         }
 
-        public T NewOperation<T>(object? input = null) where T : IOperationAsync
+        public T New<T>() where T : IOperationAsync
         {
             if (OperationFactory == null)
                 throw Errors.InvalidOperation("OperationFactory==null");
 
-            var op = OperationFactory.Create<T>();
-            if (input != null)
-                op.SetInput(input);
-            
-            return op;
+            return OperationFactory.New<T>();
+        }
+
+        public T New<T>(object? input) where T : IOperationAsync =>
+            (T) New<T>().SetInput(input);
+
+        public IOperationAsync SetInput(object? input)
+        {
+            if (input is TInput x)
+                return SetInput(x);
+
+            throw Errors.InvalidInput("invalid_input_type");
         }
 
         public IOperationAsync<TInput, TOutput> SetInput(TInput input)
@@ -87,27 +103,19 @@ namespace Meteor.Operation
             return this;
         }
 
-        public IOperationAsync SetInput(object input)
-        {
-            if (input is TInput x)
-                return SetInput(x);
+        async Task<object?> IOperationAsync.ExecuteAsync() =>
+            await ExecuteAsync().ConfigureAwait(false);
 
-            throw Errors.InvalidInput("invalid_input_type");
-        }
-
-        object? IOperationAsync.GetInput() => GetInput();
-
-        object? IOperationAsync.GetOutput() => GetOutput();
-
-        async Task<object?> IOperationAsync.ExecuteAsync() => await ExecuteAsync().ConfigureAwait(false);
+        Task<object?> IOperationAsync.ExecuteAsync(object? input) =>
+            SetInput(input).ExecuteAsync();
 
         async Task<OperationResult> IOperationAsync.TryExecuteAsync() =>
             await TryExecuteAsync().ConfigureAwait(false);
 
-        public TInput GetInput() => Input;
-        public TOutput GetOutput() => Output;
+        Task<OperationResult> IOperationAsync.TryExecuteAsync(object? input) =>
+            SetInput(input).TryExecuteAsync();
 
-        public virtual async Task<TOutput> ExecuteAsync()
+        public virtual async Task<TOutput?> ExecuteAsync()
         {
             var operationName = GetType().FullName;
 
@@ -146,6 +154,7 @@ namespace Meteor.Operation
             }
             catch (Exception e)
             {
+                Error = e;
                 State = OperationState.Failed;
                 await Errors.IgnoreAsync(OnErrorAsync, e).ConfigureAwait(false);
                 Log.Error(e, "operation execution failed");
@@ -161,7 +170,13 @@ namespace Meteor.Operation
             }
         }
 
-        public Task<OperationResult<TOutput>> TryExecuteAsync() =>
+        public Task<TOutput?> ExecuteAsync(TInput input) =>
+            SetInput(input).ExecuteAsync();
+
+        public Task<OperationResult<TOutput?>> TryExecuteAsync() =>
             OperationResultFactory.Try(ExecuteAsync);
+
+        public Task<OperationResult<TOutput?>> TryExecuteAsync(TInput input) =>
+            SetInput(input).TryExecuteAsync();
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Meteor.Utils;
+using Microsoft.Extensions.Configuration;
 
 namespace Meteor
 {
@@ -11,17 +13,23 @@ namespace Meteor
 
         static EnvVars()
         {
+            DbUri = "";
             foreach (DictionaryEntry kv in Environment.GetEnvironmentVariables())
                 Set(kv.Key, kv.Value);
         }
 
-        public static T Get<T>(string key)
+        public static string? Get(string key) => Get<string>(key);
+        public static T? Get<T>(string key)
         {
             if (!KeyValues.Contains(key))
                 return default;
 
             return (T)KeyValues[key];
         }
+
+        public static string Require(string key) => Require<string>(key);
+        public static T Require<T>(string key) =>
+            Get<T>(key) ?? throw Errors.NotFound($"required_environment_variable={key}");
 
         public static void Set(object key, object value)
         {
@@ -42,6 +50,15 @@ namespace Meteor
         {
             if (!KeyValues.Contains(key))
                 Set(key, defaultValue);
+        }
+        
+        public static void SetDefaultValues(IConfigurationSection section)
+        {
+            foreach (var (key, value) in section.AsEnumerable())
+            {
+                if (key.Contains(':'))
+                    SetDefaultValue(key.Split(':')[1], value);
+            }
         }
 
         public static bool IsDevelopment() =>

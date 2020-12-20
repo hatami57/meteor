@@ -16,7 +16,7 @@ namespace Meteor.Operation
 
         public T? GetService<T>() => _serviceProvider.GetService<T>();
 
-        public T Create<T>(params object[] parameters) where T : IOperationAsync
+        public T New<T>(params object[] parameters) where T : IOperationAsync
         {
             var op = ActivatorUtilities.CreateInstance<T>(_serviceProvider, parameters);
             op.SetOperationFactory(this).LoggerAsync = _serviceProvider.GetService<IOperationLoggerAsync>();
@@ -24,24 +24,24 @@ namespace Meteor.Operation
         }
 
         public Task<object?> ExecuteAsync<TOperation>() where TOperation : IOperationAsync =>
-            Create<TOperation>().ExecuteAsync();
+            New<TOperation>().ExecuteAsync();
 
-        public Task<object?> ExecuteAsync<TOperation>(object input) where TOperation : IOperationAsync =>
-            Create<TOperation>().SetInput(input).ExecuteAsync();
+        public Task<object?> ExecuteAsync<TOperation>(object? input) where TOperation : IOperationAsync =>
+            New<TOperation>().ExecuteAsync(input);
 
-        public Task<TOutput> ExecuteAsync<TOperation, TInput, TOutput>(TInput input)
+        public Task<TOutput?> ExecuteAsync<TOperation, TInput, TOutput>(TInput input)
             where TOperation : OperationAsync<TInput, TOutput> =>
-            Create<TOperation>().SetInput(input).ExecuteAsync();
+            New<TOperation>().ExecuteAsync(input);
 
-        public Task<TOutput> ExecuteAsync<TOperation, TOutput>() where TOperation : OperationAsync<NoType, TOutput> =>
-            Create<TOperation>().ExecuteAsync();
+        public Task<TOutput?> ExecuteAsync<TOperation, TOutput>() where TOperation : OperationAsync<NoType, TOutput> =>
+            New<TOperation>().ExecuteAsync();
 
-        public Task<OperationResult<TOutput>> TryExecuteAsync<TOperation, TInput, TOutput>(TInput input)
+        public Task<OperationResult<TOutput?>> TryExecuteAsync<TOperation, TInput, TOutput>(TInput input)
             where TOperation : OperationAsync<TInput, TOutput> =>
-            Create<TOperation>().SetInput(input).TryExecuteAsync();
+            New<TOperation>().TryExecuteAsync(input);
 
-        public Task<OperationResult<TOutput>> TryExecuteAsync<TOperation, TOutput>()
+        public Task<OperationResult<TOutput?>> TryExecuteAsync<TOperation, TOutput>()
             where TOperation : OperationAsync<NoType, TOutput> =>
-            Create<TOperation>().TryExecuteAsync();
+            New<TOperation>().TryExecuteAsync();
     }
 }

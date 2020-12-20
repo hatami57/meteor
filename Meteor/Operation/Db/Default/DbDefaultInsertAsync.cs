@@ -5,11 +5,11 @@ using Meteor.Database.SqlDialect;
 
 namespace Meteor.Operation.Db.Default
 {
-    public class DbDefaultInsertAsync<TOutput> : DbOutOperationAsync<TOutput>
+    public class DbDefaultInsertAsync<TInput, TOutput> : DbOperationAsync<TInput, TOutput>
     {
-        protected string TableName { get; set; }
-        protected string ColumnNames { get; set; }
-        protected string ColumnValues { get; set; }
+        protected string TableName { get; }
+        protected string ColumnNames { get; }
+        protected string ColumnValues { get; }
 
         public DbDefaultInsertAsync(string tableName, string columnNames, string columnValues)
         {

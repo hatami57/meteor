@@ -7,8 +7,8 @@ namespace Meteor.Operation
 {
     public class OperationResult
     {
-        public bool Success { get; }
-        public Error? Error { get; }
+        public bool Success { get; set; }
+        public Error? Error { get; set; }
 
         public OperationResult()
         {
@@ -23,7 +23,7 @@ namespace Meteor.Operation
 
     public class OperationResult<TResult> : OperationResult
     {
-        public TResult? Result { get; }
+        public TResult? Result { get; set; }
 
         public OperationResult() : this(false)
         {

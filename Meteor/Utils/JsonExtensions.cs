@@ -11,24 +11,23 @@ namespace Meteor.Utils
             Converters =
             {
                 new ErrorJsonConverter(),
-                new InstantJsonConverter(),
+                new LocalTimeJsonConverter(),
                 new LocalDateJsonConverter(),
+                new InstantJsonConverter(),
                 new GeometryPointJsonConverter()
             }
         };
 
-        public static string ToJson(this object obj, JsonSerializerOptions options = null)
+        public static string ToJson(this object obj, JsonSerializerOptions? options = null)
         {
-            if (options == null)
-                options = DefaultJsonSerializerOptions;
-            
+            options ??= DefaultJsonSerializerOptions;
+
             return JsonSerializer.Serialize(obj, options);
         }
         
-        public static T FromJson<T>(this string json, JsonSerializerOptions options = null)
+        public static T FromJson<T>(this string json, JsonSerializerOptions? options = null)
         {
-            if (options == null)
-                options = DefaultJsonSerializerOptions;
+            options ??= DefaultJsonSerializerOptions;
 
             return JsonSerializer.Deserialize<T>(json, options);
         }
