@@ -13,8 +13,7 @@ namespace Meteor.Utils
                 new ErrorJsonConverter(),
                 new LocalTimeJsonConverter(),
                 new LocalDateJsonConverter(),
-                new InstantJsonConverter(),
-                new GeometryPointJsonConverter()
+                new InstantJsonConverter()
             }
         };
 

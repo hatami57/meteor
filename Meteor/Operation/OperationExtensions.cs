@@ -1,4 +1,3 @@
-using Meteor.Logger;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Meteor.Operation

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <LangVersion>9</LangVersion>
+        <Nullable>enable</Nullable>
+        <PackageVersion>0.11.5</PackageVersion>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>Meteor.Database.EntityFrameworkCore</Title>
+        <Authors>Majid Hatami</Authors>
+        <RepositoryUrl>https://github.com/hatami57/meteor</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Meteor" Version="*" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="*" />
+    </ItemGroup>
+
+</Project>

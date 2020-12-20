@@ -2,11 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Meteor.Utils;
-using Microsoft.Extensions.Configuration;
 
 namespace Meteor
 {
-    public static partial class EnvVars
+    public static class EnvVars
     {
         private static readonly IDictionary KeyValues = new Dictionary<object, object>();
         public static string DbUri { get; private set; }
@@ -50,15 +49,6 @@ namespace Meteor
         {
             if (!KeyValues.Contains(key))
                 Set(key, defaultValue);
-        }
-        
-        public static void SetDefaultValues(IConfigurationSection section)
-        {
-            foreach (var (key, value) in section.AsEnumerable())
-            {
-                if (key.Contains(':'))
-                    SetDefaultValue(key.Split(':')[1], value);
-            }
         }
 
         public static bool IsDevelopment() =>

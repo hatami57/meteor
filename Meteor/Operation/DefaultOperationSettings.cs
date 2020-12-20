@@ -1,5 +1,3 @@
-using Meteor.Logger;
-
 namespace Meteor.Operation
 {
     public static class DefaultOperationSettings

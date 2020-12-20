@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <LangVersion>9</LangVersion>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>0.11.5</PackageVersion>
+        <Title>Meteor.Database.Dapper.MsSql</Title>
+        <Authors>Majid Hatami</Authors>
+        <RepositoryUrl>https://github.com/hatami57/meteor</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Meteor.Database.Dapper" Version="*" />
+      <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.1" />
+    </ItemGroup>
+
+</Project>

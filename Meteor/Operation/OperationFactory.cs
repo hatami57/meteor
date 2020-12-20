@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Meteor.Logger;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Meteor.Operation
