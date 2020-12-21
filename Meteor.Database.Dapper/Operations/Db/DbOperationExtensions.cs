@@ -1,4 +1,4 @@
-using Meteor.Database.Dapper.SqlDialect;
+using Meteor.Database.Sql.SqlDialect;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Meteor.Database.Dapper.Operations.Db

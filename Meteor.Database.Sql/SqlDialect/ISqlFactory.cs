@@ -1,4 +1,4 @@
-namespace Meteor.Database.Dapper.SqlDialect
+namespace Meteor.Database.Sql.SqlDialect
 {
     public interface ISqlFactory
     {

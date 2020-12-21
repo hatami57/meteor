@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meteor.SourceGenerator", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meteor.Logger", "Meteor.Logger\Meteor.Logger.csproj", "{DF5D232D-B409-4228-8AD3-F6147306F544}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meteor.Database.Sql", "Meteor.Database.Sql\Meteor.Database.Sql.csproj", "{A4679E91-4EDB-40BD-B533-8F662FA94D8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{DF5D232D-B409-4228-8AD3-F6147306F544}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF5D232D-B409-4228-8AD3-F6147306F544}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF5D232D-B409-4228-8AD3-F6147306F544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4679E91-4EDB-40BD-B533-8F662FA94D8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4679E91-4EDB-40BD-B533-8F662FA94D8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4679E91-4EDB-40BD-B533-8F662FA94D8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4679E91-4EDB-40BD-B533-8F662FA94D8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,7 @@
 using System.Text;
 using Meteor.Utils;
 
-namespace Meteor.Database.Dapper.SqlDialect
+namespace Meteor.Database.Sql.SqlDialect
 {
     public class SqlDialect : ISqlDialect
     {

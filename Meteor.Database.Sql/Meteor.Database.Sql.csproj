@@ -2,18 +2,17 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
-        <LangVersion>9</LangVersion>
-        <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.11.7</PackageVersion>
-        <Title>Meteor.Database.Dapper.Sqlite</Title>
+        <PackageVersion>0.11.5</PackageVersion>
+        <Title>Meteor.Database.Sql</Title>
         <Authors>Majid Hatami</Authors>
         <RepositoryUrl>https://github.com/hatami57/meteor</RepositoryUrl>
+        <LangVersion>9</LangVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    
     <ItemGroup>
-        <PackageReference Include="Meteor.Database.Dapper" Version="*" />
-      <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.1" />
+        <PackageReference Include="Meteor" Version="*" />
     </ItemGroup>
 
 </Project>

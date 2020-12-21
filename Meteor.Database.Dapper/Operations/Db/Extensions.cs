@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Meteor.Database.Dapper.SqlDialect;
+using Meteor.Database.Sql.SqlDialect;
 using Meteor.Utils;
 
 namespace Meteor.Database.Dapper.Operations.Db

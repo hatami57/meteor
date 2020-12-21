@@ -2,8 +2,6 @@ using System.Data;
 using Dapper;
 using Meteor.Utils;
 using Microsoft.Data.SqlClient;
-using Npgsql;
-using NpgsqlTypes;
 
 namespace Meteor.Database.Dapper.MsSql.TypeHandlers
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Threading.Tasks;
-using Meteor.Database.Dapper.SqlDialect;
+using Meteor.Database.Sql.SqlDialect;
 using Meteor.Operation;
 using Meteor.Utils;
 

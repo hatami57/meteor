@@ -8,7 +8,7 @@
         <Authors>Majid Hatami</Authors>
         <RepositoryUrl>https://github.com/hatami57/meteor</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.11.5</PackageVersion>
+        <PackageVersion>0.11.7</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>

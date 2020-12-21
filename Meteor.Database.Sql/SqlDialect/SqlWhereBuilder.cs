@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Meteor.Database.Dapper.SqlDialect
+namespace Meteor.Database.Sql.SqlDialect
 {
     public class SqlWhereBuilder
     {

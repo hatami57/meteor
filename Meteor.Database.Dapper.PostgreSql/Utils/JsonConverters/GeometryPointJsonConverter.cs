@@ -16,7 +16,7 @@ namespace Meteor.Database.Dapper.PostgreSql.Utils.JsonConverters
             
             return parts.Length < 2
                 ? null
-                : Database.PostgreSql.MeteorGeometryFactory.Default.CreatePoint(new Coordinate(parts[1], parts[0]));
+                : MeteorGeometryFactory.Default.CreatePoint(new Coordinate(parts[1], parts[0]));
         }
 
         public override void Write(Utf8JsonWriter writer, Point value, JsonSerializerOptions options)
